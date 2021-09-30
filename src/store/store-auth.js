@@ -3,13 +3,17 @@ import { firebaseAuth, firebaseDb } from "src/boot/firebase"
 
 const state = {
     loggedIn: false,
-    currentUser: {}
+    currentUser: {},
+    channelsOffline: []
 }
 
 const mutations = {
     selectUser(state, user){
         state.currentUser = user
-    }
+    },
+    addChannelsOffline(state, channels){
+        state.channelsOffline = channels
+    },
 }
 
 const actions = {
@@ -46,18 +50,57 @@ const actions = {
     handleAuthStateChange({commit, dispatch}){
         firebaseAuth.onAuthStateChanged(user => {
             if (user) {
-                commit('selectUser', user)
-                dispatch('User/fbReadData', null, { root: true })
+                const userId = firebaseAuth.currentUser.uid
+                const UserRef = firebaseDb.ref('users')
+                UserRef.on('child_added', snapshot => {
+                    let user = snapshot.val()
+                    if (snapshot.key === userId) {
+                        commit('selectUser', user)
+                    }
+                })
+                dispatch('User/fbReadChannels', null, { root: true })
+                dispatch('User/fbReadMessages', null, { root: true })
+                dispatch('addChannelToShow')
+                dispatch('fbReadDataUser')
+                this.$router.push('/')
             } else {
                 commit('selectUser', false)
+                this.$router.push('/auth')
+                dispatch('User/clearChannelsOffline', null, { root: true })
             }
         })
-    }
+    },
+    addChannelToShow({state, commit}){
+        let channels = []
+        const DbRef = firebaseDb.ref('channels')
+        DbRef.on('child_added', snapshot => {
+            if (snapshot.key in state.currentUser.channels) {
+                channels.push(snapshot.val())
+                commit('addChannelsOffline', channels)
+            }
+        })
+    },
+    fbReadDataUser({state, commit}){
+        let channels = []
+        const userId = firebaseAuth.currentUser.uid
+        const chanels = firebaseDb.ref('users/' + userId + '/channels')
+        chanels.on('child_added', snapshot => {
+            channels.push(snapshot.val())
+            commit('addChannelsOffline', channels)
+        })
+        chanels.on('child_changed', snapshot => {
+            channels.push(snapshot.val())
+            commit('addChannelsOffline', channels)
+        })
+    },
 }
 
 const getters = {
     getCurrentUser: (state) => {
         return state.currentUser
+    },
+    getChannelsOffline: (state) => {
+        return state.channelsOffline
     }
 }
 

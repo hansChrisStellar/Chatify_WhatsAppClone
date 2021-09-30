@@ -11,7 +11,7 @@
         :stamp="messageSection.anotherTimeFormat"
         bg-color="amber-7"
         ref="checkMessage"
-        :sent="messageSection.user.id === getCurrentUser.uid"
+        :sent="getCurrentUser.username === messageSection.user.name"
       />
     </div>
     <MessageForm />
@@ -23,11 +23,6 @@ import MessageHeader from "./MessageHeader.vue";
 import { mapGetters, mapActions, mapState } from "vuex";
 import { firebaseAuth } from "src/boot/firebase";
 export default {
-  data() {
-    return {
-      checkOn: true,
-    };
-  },
   components: {
     MessageHeader,
     MessageForm,

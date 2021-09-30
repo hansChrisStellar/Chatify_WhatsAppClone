@@ -4,7 +4,7 @@ import { uid } from "quasar"
 const state = {
     chanels: {},
     currentChanel: {},
-
+    messages: {}
 }
 
 const mutations = {
@@ -14,20 +14,31 @@ const mutations = {
     selectChanel(state, chanelSelected){
         state.currentChanel = chanelSelected
     },
-    addMessage(state, actualChanel){
-        state.currentChanel = actualChanel
-    },
+    addMessages(state, messages){
+        state.messages[messages.messageId] = messages.message
+    },  
+    clearChannels(state, payload){
+        state.channelsOffline = payload
+    }
 }
 
 const actions = {
     addNewChanel({}, chanelForm){
         const IdChanel = uid()
-        const chanelRef = firebaseDb.ref('chanels/' + IdChanel)
+        const idUser = firebaseAuth.currentUser.uid
+        const channelsRef = firebaseDb.ref('channels/' + IdChanel)
+        const channelUserRef = firebaseDb.ref('users/' + idUser + '/channels/' + IdChanel)
         const user = {
             name: firebaseAuth.currentUser.displayName,
             avatar: firebaseAuth.currentUser.photoURL
         }
-        chanelRef.set({
+        channelUserRef.set({
+            name: chanelForm.name,
+            description: chanelForm.description,
+            id: IdChanel,
+            createdBy: user
+        })
+        channelsRef.set({
             name: chanelForm.name,
             description: chanelForm.description,
             id: IdChanel,
@@ -40,13 +51,14 @@ const actions = {
     sendMessage({state}, message){
         const messageUniqueId = uid()
         const currentChanel = state.currentChanel.id
-        const refDb = firebaseDb.ref('chanels/' + currentChanel + '/messages/' + messageUniqueId)
+        const refDb = firebaseDb.ref('messages/' + currentChanel + '/' + messageUniqueId)
         const actualDate = new Date().getTime()
         const anotherTimeFormat = new Date().getHours() + ':' + new Date().getMinutes()
         refDb.set({
             content: message,
             timestamp: actualDate,
             anotherTimeFormat: anotherTimeFormat,
+            channelId: currentChanel,
             user: {
                 avatar: firebaseAuth.currentUser.photoURL,
                 id: firebaseAuth.currentUser.uid,
@@ -55,19 +67,62 @@ const actions = {
         })
         
     },
-    fbReadData({commit}){
-        const chanels = firebaseDb.ref('chanels')
+    joinAnotherChannel({state, commit}, channel){
+        const userId = firebaseAuth.currentUser.uid
+        const channelsRef = firebaseDb.ref('channels')
+        channelsRef.on('child_added', snapshot => {
+            let channels = snapshot.val()
+            if (channel === channels.id) {
+                const channelUserRef = firebaseDb.ref('users/' + userId + '/channels/' + channels.id)
+                channelUserRef.set({
+                    name: channels.name,
+                    description: channels.description,
+                    id: channels.id,
+                    createdBy: {
+                        avatar: channels.createdBy.avatar,
+                        name: channels.createdBy.name
+                    }
+                })
+            } else {
+                console.log('no es igual')
+            }
+        })
+    },
+    clearChannelsOffline({commit}){
+        commit('clearChannels', null)
+    },
+    logOff(){
+        firebaseAuth.signOut()
+    },
+    fbReadChannels({state, commit}){
+        const chanels = firebaseDb.ref('channels')
         chanels.on('child_added', snapshot => {
             let chanels = snapshot.val()
             commit('addChanels', chanels)
         })
-        chanels.on('child_changed', snapshot => {
-            let message = snapshot.val()
-            commit('addMessage', message)
-        })
+        // chanels.on('child_changed', snapshot => {
+        //     let message = snapshot.val()
+        //     commit('addMessage', message)
+        // })
     },
-    logOff(){
-        firebaseAuth.signOut()
+    fbReadMessages({state, commit}){
+        let currentChannelId = state.currentChanel.id
+        const messages = firebaseDb.ref('messages/' )
+        messages.on('child_added', snapshot => {
+            let messages = {
+                messageId: snapshot.key,
+                message: snapshot.val()
+            }
+            commit('addMessages', messages)
+        })
+
+        messages.on('child_changed', snapshot => {
+            let messages = {
+                messageId: snapshot.key,
+                message: snapshot.val()
+            }
+            commit('addMessages', messages)
+        })
     },
 }
 
@@ -76,15 +131,33 @@ const getters = {
         return state.chanels
     },
     getMessages: (state) => {
-        let message = []
-        let actualChanelSectionMessages = state.currentChanel.messages
-        for (const chanelMessage in actualChanelSectionMessages){
-            message.push(actualChanelSectionMessages[chanelMessage])
+        let messages = []
+        let currentChannelId = state.currentChanel.id
+        let allMessages = state.messages
+        for (const message in allMessages){
+            if (currentChannelId === message) {
+                Object.values(allMessages[message]).forEach(message => {
+                    messages.push(message)
+                })
+                console.log('existe')
+            } else {
+                console.log('no existe')
+            }
         }
-        return message.sort((a,b) => {
+        return messages.sort((a,b) => {
             return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
         })
-    }
+        
+     
+        
+        
+        
+        // let message = state.currentChanel.messages
+        // for (const chanelMessage in actualChanelSectionMessages){
+        //      message.push(actualChanelSectionMessages[chanelMessage])
+        //  }
+       
+    },
 }
 
 export default {

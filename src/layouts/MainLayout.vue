@@ -2,14 +2,6 @@
   <q-layout view="hHh LpR fFf" style="min-height: 4rem">
     <q-header elevated class="bg-deep-purple-8 text-white">
       <q-toolbar>
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-
         <q-toolbar-title>
           <div class="text-h5">Slack Clone</div>
         </q-toolbar-title>
@@ -25,17 +17,13 @@
     </q-header>
     <!-- SidePanel -->
     <q-drawer
-      v-model="leftDrawerOpen"
-      side="left"
-      class="bg-deep-purple-8"
+      v-model="rightDrawerOpen"
+      class="bg-deep-purple-4"
+      side="right"
       overlay
       elevated
     >
-      <SidePanel />
-    </q-drawer>
-
-    <q-drawer v-model="rightDrawerOpen" side="right" overlay elevated>
-      <!-- drawer content -->
+      <RightPanel />
     </q-drawer>
 
     <q-page-container>
@@ -45,11 +33,11 @@
 </template>
 
 <script>
-import SidePanel from "./../components/SidePanel/SidePanel.vue";
+import RightPanel from "../components/SidePanel/RightPanel.vue";
 export default {
   name: "MainLayout",
   components: {
-    SidePanel,
+    RightPanel,
   },
   data() {
     return {
