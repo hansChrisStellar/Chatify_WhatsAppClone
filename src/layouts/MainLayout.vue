@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFr" style="min-height: 3rem">
-    <q-header bordered class="bg-light-blue-6 text-white">
+    <q-header bordered class="bg-light-blue-4 text-white">
       <q-toolbar>
         <q-toolbar-title>
           <div class="text-h5">Slack Clone</div>

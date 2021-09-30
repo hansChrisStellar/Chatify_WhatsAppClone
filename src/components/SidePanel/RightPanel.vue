@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-grey-10">
+  <div class="bg-grey-10 relative-position">
     <!-- Profile section -->
     <div
       class="
@@ -41,47 +41,50 @@
     <!-- User Dropdown -->
 
     <!-- Expansion -->
-    <q-list padding bordered class="rounded-borders">
-      <q-expansion-item dense dense-toggle expand-separator label="Channels">
+    <q-list dark class="">
+      <q-expansion-item dense-toggle expand-separator label="Channels">
         <q-card>
-          <q-card-section
-            @click="addNewChannel"
-            class="
-              flex
-              text-green-2
-              justify-between
-              cursor-pointer
-              items-center
-              bg-green-9
-            "
-          >
-            <div>Create A New Channel</div>
-            <q-icon name="add" color="green-3" size="1.5rem" />
-          </q-card-section>
-          <q-card-section
-            @click="joinChannel"
-            class="
-              flex
-              text-green-2
-              justify-between
-              cursor-pointer
-              items-center
-              bg-green-7
-            "
-          >
-            <div>Join Channel</div>
-            <q-icon name="add" color="green-5" size="1.5rem" />
-          </q-card-section>
-          <q-card-section
-            class="flex justify-between cursor-pointer items-center"
-            v-for="(chanel, key) in getChannelsOffline"
-            :key="key"
-            @click="selectChanel(chanel)"
-          >
-            {{ chanel.name }}
-          </q-card-section>
+          <!-- Channels -->
+          <q-list class="bg-grey-10 text-primary">
+            <q-item
+              dark
+              v-for="(chanel, key) in getChannelsOffline"
+              :key="key"
+              @click="selectChanel(chanel)"
+              clickable
+              v-ripple
+              :active="chanel.name == getCurrentChanel.name"
+              active-class="my-menu-link"
+            >
+              <q-item-section avatar>
+                <q-icon name="inbox" />
+              </q-item-section>
+
+              <q-item-section>{{ chanel.name }}</q-item-section>
+            </q-item>
+          </q-list>
         </q-card>
       </q-expansion-item>
+    </q-list>
+    <q-separator color="grey" spaced />
+
+    <q-list class="absolute-bottom">
+      <q-separator color="grey" spaced />
+      <!-- Create Channel -->
+      <q-item dark @click="addNewChannel" clickable v-ripple>
+        <q-item-section>Create Channel</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="add" />
+        </q-item-section>
+      </q-item>
+
+      <!-- Join Channel -->
+      <q-item dark @click="joinChannel" clickable v-ripple>
+        <q-item-section>Join Channel</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="add" />
+        </q-item-section>
+      </q-item>
     </q-list>
     <!-- Modal -->
     <AddNewChannel v-model="showModalNewChannel" />
@@ -90,7 +93,7 @@
 </template>
 <script>
 import { firebaseAuth } from "../../boot/firebase";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import AddNewChannel from "./../Modals/AddNewChannel.vue";
 import JoinChannel from "./../Modals/joinNewChannel.vue";
 export default {
@@ -110,7 +113,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("User", ["getChanels"]),
+    ...mapGetters("User", ["getChanels", "getCurrentChanel"]),
     ...mapGetters("Auth", ["getCurrentUser", "getChannelsOffline"]),
   },
   components: {
@@ -121,6 +124,7 @@ export default {
     return {
       showModalNewChannel: false,
       showModalJoinChannel: false,
+      link: "hola",
     };
   },
 };
@@ -128,5 +132,10 @@ export default {
 <style lang="scss">
 .headerName {
   border-bottom: solid 1px grey;
+}
+
+.my-menu-link {
+  color: white;
+  background: #359bdf;
 }
 </style>

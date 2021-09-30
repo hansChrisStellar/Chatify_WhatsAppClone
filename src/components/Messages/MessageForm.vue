@@ -4,13 +4,11 @@
       <q-input
         class="inputFormBase"
         v-model="message"
-        autogrow
-        color="grey"
         dense
         dark
-        rounded
         label="Type a message"
-        outlined
+        maxlength="300"
+        @keyup.enter="sendMessageForm"
       >
       </q-input>
       <q-btn icon="attach_file" dense flat color="grey" />
@@ -29,6 +27,7 @@ export default {
   methods: {
     ...mapActions("User", ["sendMessage"]),
     sendMessageForm() {
+      this.message = "";
       this.sendMessage(this.message);
     },
   },

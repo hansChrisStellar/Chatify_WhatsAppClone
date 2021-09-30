@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-center">
     <NavBar />
-    <div class="row justify-between full-width bg-dark">
+    <div class="row justify-between full-width bg-dark baseIndex">
       <!-- Chat Box -->
       <div class="col-10">
         <Messages v-if="Object.values(currentChanel).length >= 1" />
@@ -34,5 +34,8 @@ export default {
 <style lang="scss">
 .rightBar {
   border-left: 1px grey solid;
+}
+.baseIndex {
+  height: 94vh;
 }
 </style>

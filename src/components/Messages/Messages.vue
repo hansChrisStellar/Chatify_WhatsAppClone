@@ -41,8 +41,28 @@ export default {
   width: 100%;
 }
 .chatBoxBase {
-  height: 36rem;
+  height: 37.1rem;
   border-top: solid 1px grey;
   border-bottom: solid 1px grey;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>

@@ -4,7 +4,7 @@ import { uid } from "quasar"
 const state = {
     chanels: {},
     currentChanel: {},
-    messages: {}
+    messages: {},
 }
 
 const mutations = {
@@ -162,6 +162,9 @@ const getters = {
         //  }
        
     },
+    getCurrentChanel: (state) => {
+        return state.currentChanel
+    }
 }
 
 export default {
