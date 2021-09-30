@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-grey-10 relative-position">
+  <div class="bg-grey-10 relative-position rightPanel">
     <!-- Profile section -->
     <div
       class="
@@ -45,6 +45,7 @@
       <q-expansion-item dense-toggle expand-separator label="Channels">
         <q-card>
           <!-- Channels -->
+
           <q-list class="bg-grey-10 text-primary">
             <q-item
               dark
@@ -56,18 +57,17 @@
               :active="chanel.name == getCurrentChanel.name"
               active-class="my-menu-link"
             >
-              <q-item-section avatar>
-                <q-icon name="inbox" />
-              </q-item-section>
-
               <q-item-section>{{ chanel.name }}</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="groups" />
+              </q-item-section>
             </q-item>
           </q-list>
         </q-card>
       </q-expansion-item>
     </q-list>
-    <q-separator color="grey" spaced />
 
+    <q-separator color="grey" spaced />
     <q-list class="absolute-bottom">
       <q-separator color="grey" spaced />
       <!-- Create Channel -->

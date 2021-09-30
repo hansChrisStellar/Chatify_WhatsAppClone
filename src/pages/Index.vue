@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-center">
-    <NavBar />
     <div class="row justify-between full-width bg-dark baseIndex">
       <!-- Chat Box -->
       <div class="col-10">
@@ -16,14 +15,14 @@
 <script>
 import Messages from "./../components/Messages/Messages.vue";
 import { Loading } from "quasar";
-import NavBar from "layouts/MainLayout.vue";
+
 import SidePanel from "./../components/SidePanel/RightPanel.vue";
 import { mapState } from "vuex";
 export default {
   name: "Home",
   components: {
     Messages,
-    NavBar,
+
     SidePanel,
   },
   computed: {
@@ -36,6 +35,6 @@ export default {
   border-left: 1px grey solid;
 }
 .baseIndex {
-  height: 94vh;
+  height: 100vh;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="baseMessageContainer">
     <MessageHeader />
-    <div class="q-pa-md bg-blue-grey-10 chatBoxBase">
+    <div class="q-pa-md bg-blue-grey-8 chatBoxBase">
       <q-chat-message
         v-for="(messageSection, index) in getMessages"
         :key="index"
@@ -37,23 +37,23 @@ export default {
 </script>
 <style lang="scss">
 .baseMessageContainer {
-  height: 92.4vh;
+  height: 100%;
   width: 100%;
 }
 .chatBoxBase {
-  height: 37.1rem;
+  height: 40rem;
   border-top: solid 1px grey;
   border-bottom: solid 1px grey;
   overflow-x: hidden;
   overflow-y: auto;
 }
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #020202;
 }
 
 /* Handle */

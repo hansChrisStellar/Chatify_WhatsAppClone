@@ -2,12 +2,14 @@
   <div>
     <q-form class="bg-grey-10 baseForm items-center q-px-md">
       <q-input
+        type="text"
         class="inputFormBase"
         v-model="message"
         dense
         dark
         label="Type a message"
         maxlength="300"
+        autocomplete="off"
         @keyup.enter="sendMessageForm"
       >
       </q-input>
@@ -27,8 +29,8 @@ export default {
   methods: {
     ...mapActions("User", ["sendMessage"]),
     sendMessageForm() {
-      this.message = "";
       this.sendMessage(this.message);
+      this.message = "";
     },
   },
 };
