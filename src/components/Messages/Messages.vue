@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="baseMessageContainer">
     <MessageHeader />
-    <div class="bg-grey-3 q-my-sm" style="min-height: 20rem; width: 100%">
+    <div class="q-pa-md bg-blue-grey-10 chatBoxBase">
       <q-chat-message
         v-for="(messageSection, index) in getMessages"
         :key="index"
@@ -9,7 +9,8 @@
         :avatar="messageSection.user.avatar"
         :text="[messageSection.content]"
         :stamp="messageSection.anotherTimeFormat"
-        bg-color="amber-7"
+        text-color="white"
+        bg-color="light-blue-6"
         ref="checkMessage"
         :sent="getCurrentUser.username === messageSection.user.name"
       />
@@ -34,3 +35,14 @@ export default {
   methods: {},
 };
 </script>
+<style lang="scss">
+.baseMessageContainer {
+  height: 92.4vh;
+  width: 100%;
+}
+.chatBoxBase {
+  height: 36rem;
+  border-top: solid 1px grey;
+  border-bottom: solid 1px grey;
+}
+</style>

@@ -1,21 +1,38 @@
 <template>
-  <div class="flex flex-center column">
+  <div class="flex flex-center">
     <NavBar />
-    <Messages /> <MetaPanel />
+    <div class="row justify-between full-width bg-dark">
+      <!-- Chat Box -->
+      <div class="col-10">
+        <Messages v-if="Object.values(currentChanel).length >= 1" />
+        <div v-else>Select a channel :D</div>
+      </div>
+      <!-- Side Panel -->
+      <SidePanel class="col-2 rightBar" />
+    </div>
   </div>
 </template>
 
 <script>
 import Messages from "./../components/Messages/Messages.vue";
-import MetaPanel from "./../components/MetaPanel/MetaPanel.vue";
 import { Loading } from "quasar";
 import NavBar from "layouts/MainLayout.vue";
+import SidePanel from "./../components/SidePanel/RightPanel.vue";
+import { mapState } from "vuex";
 export default {
   name: "Home",
   components: {
     Messages,
-    MetaPanel,
     NavBar,
+    SidePanel,
+  },
+  computed: {
+    ...mapState("User", ["currentChanel"]),
   },
 };
 </script>
+<style lang="scss">
+.rightBar {
+  border-left: 1px grey solid;
+}
+</style>

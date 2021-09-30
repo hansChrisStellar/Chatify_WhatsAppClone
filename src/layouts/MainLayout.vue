@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="hHh LpR fFf" style="min-height: 4rem">
-    <q-header elevated class="bg-deep-purple-8 text-white">
+  <q-layout view="hHh lpR fFr" style="min-height: 3rem">
+    <q-header bordered class="bg-light-blue-6 text-white">
       <q-toolbar>
         <q-toolbar-title>
           <div class="text-h5">Slack Clone</div>
@@ -16,15 +16,7 @@
       </q-toolbar>
     </q-header>
     <!-- SidePanel -->
-    <q-drawer
-      v-model="rightDrawerOpen"
-      class="bg-deep-purple-4"
-      side="right"
-      overlay
-      elevated
-    >
-      <RightPanel />
-    </q-drawer>
+    <q-drawer> </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -33,16 +25,12 @@
 </template>
 
 <script>
-import RightPanel from "../components/SidePanel/RightPanel.vue";
 export default {
   name: "MainLayout",
-  components: {
-    RightPanel,
-  },
+  components: {},
   data() {
     return {
-      leftDrawerOpen: false,
-      rightDrawerOpen: false,
+      rightDrawerOpen: true,
     };
   },
 };

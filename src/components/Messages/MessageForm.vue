@@ -1,18 +1,20 @@
 <template>
   <div>
-    <q-form>
-      <q-input color="deep-purple-3" v-model="message" autogrow filled>
-        <template v-slot:append>
-          <q-btn icon="attach_file" dense flat color="deep-purple-9" />
-          <q-btn
-            icon="send"
-            @click="sendMessageForm"
-            dense
-            flat
-            color="deep-purple-9"
-          />
-        </template>
+    <q-form class="bg-grey-10 baseForm items-center q-px-md">
+      <q-input
+        class="inputFormBase"
+        v-model="message"
+        autogrow
+        color="grey"
+        dense
+        dark
+        rounded
+        label="Type a message"
+        outlined
+      >
       </q-input>
+      <q-btn icon="attach_file" dense flat color="grey" />
+      <q-btn icon="send" @click="sendMessageForm" dense flat color="grey" />
     </q-form>
   </div>
 </template>
@@ -32,3 +34,13 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+.baseForm {
+  height: 4rem;
+  width: 100%;
+  display: flex;
+}
+.inputFormBase {
+  width: 95%;
+}
+</style>

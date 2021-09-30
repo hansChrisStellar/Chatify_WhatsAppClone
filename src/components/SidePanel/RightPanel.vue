@@ -1,32 +1,45 @@
 <template>
-  <div>
-    <div class="q-pa-xl text-center">
-      <q-avatar>
+  <div class="bg-grey-10">
+    <!-- Profile section -->
+    <div
+      class="
+        q-pa-md
+        text-center
+        row
+        flex
+        bg-grey-10
+        items-center
+        justify-between
+        headerName
+      "
+    >
+      <div class="justify-center text-white items-center text-weight-light row">
+        <div class="ellipsis">
+          {{ getCurrentUser.username }}
+        </div>
+        <q-btn-dropdown color="white" dense flat dropdown-icon="expand_more">
+          <q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label> Change avatar </q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup @click="logInOff">
+              <q-item-section>
+                <q-item-label>Sign Out</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+      </div>
+      <q-avatar size="35px">
         <img :src="getCurrentUser.photoURL" />
       </q-avatar>
-      <p class="q-mt-md">{{ getCurrentUser.username }}</p>
     </div>
 
     <!-- User Dropdown -->
-    <q-btn-dropdown
-      color="pink"
-      label="Dropdown Button"
-      dropdown-icon="change_history"
-    >
-      <q-list>
-        <q-item clickable v-close-popup @click="onItemClick">
-          <q-item-section>
-            <q-item-label> Change avatar </q-item-label>
-          </q-item-section>
-        </q-item>
 
-        <q-item clickable v-close-popup @click="logInOff">
-          <q-item-section>
-            <q-item-label>Sign Out</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-btn-dropdown>
     <!-- Expansion -->
     <q-list padding bordered class="rounded-borders">
       <q-expansion-item dense dense-toggle expand-separator label="Channels">
@@ -112,3 +125,8 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+.headerName {
+  border-bottom: solid 1px grey;
+}
+</style>
