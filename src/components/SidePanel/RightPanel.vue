@@ -82,7 +82,7 @@ import AddNewChannel from "./../Modals/AddNewChannel.vue";
 import JoinChannel from "./../Modals/joinNewChannel.vue";
 export default {
   methods: {
-    ...mapActions("User", ["selectChanelVuex", "logOff", "addChannelToShow"]),
+    ...mapActions("User", ["selectChanelVuex", "logOff"]),
     addNewChannel() {
       this.showModalNewChannel = true;
     },

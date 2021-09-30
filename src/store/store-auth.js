@@ -14,6 +14,10 @@ const mutations = {
     addChannelsOffline(state, channels){
         state.channelsOffline = channels
     },
+    clearAllData(state, payload){
+        state.currentUser = payload
+        state.channelsOffline = payload
+    }
 }
 
 const actions = {
@@ -60,27 +64,17 @@ const actions = {
                 })
                 dispatch('User/fbReadChannels', null, { root: true })
                 dispatch('User/fbReadMessages', null, { root: true })
-                dispatch('addChannelToShow')
-                dispatch('fbReadDataUser')
+                dispatch('fbReadDataUserChannels')
                 this.$router.push('/')
             } else {
                 commit('selectUser', false)
+                commit('clearAllData', false)
+                dispatch('User/clearData', null, { root: true })
                 this.$router.push('/auth')
-                dispatch('User/clearChannelsOffline', null, { root: true })
             }
         })
     },
-    addChannelToShow({state, commit}){
-        let channels = []
-        const DbRef = firebaseDb.ref('channels')
-        DbRef.on('child_added', snapshot => {
-            if (snapshot.key in state.currentUser.channels) {
-                channels.push(snapshot.val())
-                commit('addChannelsOffline', channels)
-            }
-        })
-    },
-    fbReadDataUser({state, commit}){
+    fbReadDataUserChannels({state, commit}){
         let channels = []
         const userId = firebaseAuth.currentUser.uid
         const chanels = firebaseDb.ref('users/' + userId + '/channels')

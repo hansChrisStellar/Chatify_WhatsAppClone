@@ -17,8 +17,10 @@ const mutations = {
     addMessages(state, messages){
         state.messages[messages.messageId] = messages.message
     },  
-    clearChannels(state, payload){
-        state.channelsOffline = payload
+    clearAllData(state, payload){
+        state.currentChanel = {}
+        state.chanels = {}
+        state.messages = {}
     }
 }
 
@@ -67,7 +69,7 @@ const actions = {
         })
         
     },
-    joinAnotherChannel({state, commit}, channel){
+    joinAnotherChannel({state, commit, dispatch}, channel){
         const userId = firebaseAuth.currentUser.uid
         const channelsRef = firebaseDb.ref('channels')
         channelsRef.on('child_added', snapshot => {
@@ -83,19 +85,24 @@ const actions = {
                         name: channels.createdBy.name
                     }
                 })
-            } else {
-                console.log('no es igual')
             }
+            dispatch('Auth/fbReadDataUserChannels', null, {root: true})
         })
     },
-    clearChannelsOffline({commit}){
-        commit('clearChannels', null)
+    clearData({commit}){
+        commit('clearAllData', false)
     },
     logOff(){
         firebaseAuth.signOut()
     },
     fbReadChannels({state, commit}){
         const chanels = firebaseDb.ref('channels')
+
+        chanels.once('value', snapshot => {
+            let chanels = snapshot.val()
+            commit('addChanels', chanels)
+        })
+
         chanels.on('child_added', snapshot => {
             let chanels = snapshot.val()
             commit('addChanels', chanels)
@@ -139,9 +146,6 @@ const getters = {
                 Object.values(allMessages[message]).forEach(message => {
                     messages.push(message)
                 })
-                console.log('existe')
-            } else {
-                console.log('no existe')
             }
         }
         return messages.sort((a,b) => {
