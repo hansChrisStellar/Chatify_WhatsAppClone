@@ -19,8 +19,8 @@
   </div>
 </template>
 <script>
-import MessageForm from "./MessageForm.vue";
-import MessageHeader from "./MessageHeader.vue";
+import MessageForm from "../DM-Section/MessageForm.vue";
+import MessageHeader from "../DM-Section/MessageHeader.vue";
 import { mapGetters, mapActions, mapState } from "vuex";
 import { firebaseAuth } from "src/boot/firebase";
 export default {

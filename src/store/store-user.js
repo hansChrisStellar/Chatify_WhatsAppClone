@@ -4,15 +4,28 @@ import { uid } from "quasar"
 const state = {
     chanels: {},
     currentChanel: {},
+    currentUserChat: {},
     messages: {},
+    contacts: {},
 }
 
 const mutations = {
     addChanels(state, chanels){
         state.chanels[chanels.id] = chanels
     },
+    addContacts(state, contacts){
+        state.contacts = contacts
+    },
+    addChanelsFirtsInstance(state, chanels){
+        state.chanels = chanels
+    },
     selectChanel(state, chanelSelected){
         state.currentChanel = chanelSelected
+        state.currentUserChat = {}
+    },
+    selectUserChat(state, userChatSelected){
+        state.currentUserChat = userChatSelected
+        state.currentChanel = {}
     },
     addMessages(state, messages){
         state.messages[messages.messageId] = messages.message
@@ -47,8 +60,29 @@ const actions = {
             createdBy: user
         })
     },
+    addNewContact({}, contactId){
+        const contactRef = firebaseDb.ref('users/' + contactId)
+        contactRef.on('value', snapshot => {
+            const userInformation = snapshot.val()
+            let userInfoPass = {
+                name: userInformation.username,
+                img: userInformation.photoURL,
+                idUser: snapshot.key
+            }
+            const actualUserId = firebaseAuth.currentUser.uid
+            const dbRef = firebaseDb.ref('users/' + actualUserId + '/contacts/' + contactId)
+            dbRef.set({
+                name: userInfoPass.name,
+                img: userInfoPass.img,
+                idUser: userInfoPass.idUser
+            })
+        })
+    },
     selectChanelVuex({commit}, chanelSelected){
         commit('selectChanel', chanelSelected)
+    },
+    selectUserChatVuex({commit}, contactSelected){
+        commit('selectUserChat', contactSelected)
     },
     sendMessage({state}, message){
         const messageUniqueId = uid()
@@ -86,7 +120,7 @@ const actions = {
                     }
                 })
             }
-            dispatch('Auth/fbReadDataUserChannels', null, {root: true})
+            
         })
     },
     clearData({commit}){
@@ -100,17 +134,17 @@ const actions = {
 
         chanels.once('value', snapshot => {
             let chanels = snapshot.val()
-            commit('addChanels', chanels)
+            commit('addChanelsFirtsInstance', chanels)
         })
 
         chanels.on('child_added', snapshot => {
             let chanels = snapshot.val()
             commit('addChanels', chanels)
         })
-        // chanels.on('child_changed', snapshot => {
-        //     let message = snapshot.val()
-        //     commit('addMessage', message)
-        // })
+        chanels.on('child_changed', snapshot => {
+            let message = snapshot.val()
+            commit('addMessage', message)
+        })
     },
     fbReadMessages({state, commit}){
         let currentChannelId = state.currentChanel.id
@@ -131,6 +165,14 @@ const actions = {
             commit('addMessages', messages)
         })
     },
+    fbReadContacts({state, commit}){
+        const actualUserId = firebaseAuth.currentUser.uid
+        const fbRef = firebaseDb.ref('users/' + actualUserId + '/contacts')
+        fbRef.once('value', snapshot => {
+            let contacts = snapshot.val()
+            commit('addContacts', contacts)
+        })
+    }
 }
 
 const getters = {
@@ -164,6 +206,12 @@ const getters = {
     },
     getCurrentChanel: (state) => {
         return state.currentChanel
+    },
+    getContacts: (state) => {
+        return state.contacts
+    },
+    getCurrentUserChat: (state) => {
+        return state.currentUserChat
     }
 }
 

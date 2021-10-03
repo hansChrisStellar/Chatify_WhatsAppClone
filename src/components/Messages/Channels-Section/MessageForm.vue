@@ -10,11 +10,17 @@
         label="Type a message"
         maxlength="300"
         autocomplete="off"
-        @keyup.enter="sendMessageForm"
+        @keyup.enter.prevent="sendMessageForm"
       >
       </q-input>
       <q-btn icon="attach_file" dense flat color="grey" />
-      <q-btn icon="send" @click="sendMessageForm" dense flat color="grey" />
+      <q-btn
+        icon="send"
+        @click.prevent="sendMessageForm"
+        dense
+        flat
+        color="grey"
+      />
     </q-form>
   </div>
 </template>

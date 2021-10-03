@@ -3,8 +3,10 @@
     <div class="row justify-between full-width bg-dark baseIndex">
       <!-- Chat Box -->
       <div class="col-10">
-        <Messages v-if="Object.values(currentChanel).length >= 1" />
-        <div v-else>Select a channel :D</div>
+        <div>
+          <Messages v-if="Object.values(currentChanel).length >= 1" />
+          <MessagesContact v-if="Object.values(currentUserChat).length >= 1" />
+        </div>
       </div>
       <!-- Side Panel -->
       <SidePanel class="col-2 rightBar" />
@@ -13,20 +15,20 @@
 </template>
 
 <script>
-import Messages from "./../components/Messages/Messages.vue";
+import Messages from "./../components/Messages/Channels-Section/Messages.vue";
 import { Loading } from "quasar";
-
+import MessagesContact from "./../components/Messages/DM-Section/MessagesContact.vue";
 import SidePanel from "./../components/SidePanel/RightPanel.vue";
 import { mapState } from "vuex";
 export default {
   name: "Home",
   components: {
     Messages,
-
     SidePanel,
+    MessagesContact,
   },
   computed: {
-    ...mapState("User", ["currentChanel"]),
+    ...mapState("User", ["currentChanel", "currentUserChat"]),
   },
 };
 </script>

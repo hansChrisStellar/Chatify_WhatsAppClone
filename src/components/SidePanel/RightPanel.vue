@@ -17,35 +17,34 @@
         <div class="ellipsis">
           {{ getCurrentUser.username }}
         </div>
-        <q-btn-dropdown color="white" dense flat dropdown-icon="expand_more">
-          <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label> Change avatar </q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-close-popup @click="logInOff">
-              <q-item-section>
-                <q-item-label>Sign Out</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
       </div>
       <q-avatar size="35px">
         <img :src="getCurrentUser.photoURL" />
       </q-avatar>
     </div>
-
-    <!-- User Dropdown -->
-
-    <!-- Expansion -->
-    <q-list dark class="">
-      <q-expansion-item dense-toggle expand-separator label="Channels">
-        <q-card>
-          <!-- Channels -->
-
+    <!-- Tabs -->
+    <q-card>
+      <!-- Upper Tabs -->
+      <q-tabs
+        v-model="tab"
+        dense
+        class="bg-grey-10 text-grey-7"
+        active-color="primary"
+        indicator-color="purple"
+        align="justify"
+      >
+        <q-tab name="channels" icon="groups" />
+        <q-tab name="dm" icon="all_inbox" />
+        <q-tab name="settings" icon="settings" />
+      </q-tabs>
+      <!-- Bottom Tabs -->
+      <q-tab-panels
+        v-model="tab"
+        animated
+        class="text-white no-border no-border-radius"
+      >
+        <!-- Channels -->
+        <q-tab-panel name="channels" class="no-padding">
           <q-list class="bg-grey-10 text-primary">
             <q-item
               dark
@@ -59,36 +58,101 @@
             >
               <q-item-section>{{ chanel.name }}</q-item-section>
               <q-item-section avatar>
-                <q-icon name="groups" />
+                <!-- <q-icon name="groups" /> -->
+                <q-icon name="circle" color="red" />
               </q-item-section>
             </q-item>
           </q-list>
-        </q-card>
-      </q-expansion-item>
-    </q-list>
-
-    <q-separator color="grey" spaced />
-    <q-list class="absolute-bottom">
-      <q-separator color="grey" spaced />
-      <!-- Create Channel -->
-      <q-item dark @click="addNewChannel" clickable v-ripple>
-        <q-item-section>Create Channel</q-item-section>
-        <q-item-section avatar>
-          <q-icon name="add" />
-        </q-item-section>
-      </q-item>
-
-      <!-- Join Channel -->
-      <q-item dark @click="joinChannel" clickable v-ripple>
-        <q-item-section>Join Channel</q-item-section>
-        <q-item-section avatar>
-          <q-icon name="add" />
-        </q-item-section>
-      </q-item>
-    </q-list>
+        </q-tab-panel>
+        <!-- Direct Messages -->
+        <q-tab-panel name="dm" class="no-padding">
+          <q-list class="bg-grey-10 text-white">
+            <!-- Contacts -->
+            <q-item
+              dark
+              v-for="(contact, key) in getContacts"
+              :key="key"
+              clickable
+              v-ripple
+              active-class="my-menu-link"
+              @click="selectUserChat(contact)"
+            >
+              <q-item-section>{{ contact.name }}</q-item-section>
+              <q-item-section avatar>
+                <!-- <q-icon name="groups" /> -->
+                <q-icon name="circle" color="red" />
+              </q-item-section>
+            </q-item>
+            <!-- Add contacts -->
+            <q-item dark @click="addNewContact" clickable v-ripple>
+              <q-item-section>Add Contact</q-item-section>
+              <q-item-section avatar>
+                <!-- <q-icon name="groups" /> -->
+                <q-icon name="add" color="green" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-tab-panel>
+        <!-- Settings -->
+        <q-tab-panel name="settings" class="no-padding">
+          <q-list class="bg-grey-10 text-primary">
+            <!-- Create Channel -->
+            <q-item
+              dark
+              @click="addNewChannel"
+              clickable
+              class="bg-green-5"
+              v-ripple
+            >
+              <q-item-section>Create Channel</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="add" />
+              </q-item-section>
+            </q-item>
+            <!-- Join Channel -->
+            <q-item
+              dark
+              @click="joinChannel"
+              clickable
+              class="bg-green-3"
+              v-ripple
+            >
+              <q-item-section>Join Channel</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="add" />
+              </q-item-section>
+            </q-item>
+            <q-separator spaced="1px" color="grey" />
+            <!-- Change avatar -->
+            <q-item dark clickable v-ripple>
+              <q-item-section>Change Avatar</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="account_circle" />
+              </q-item-section>
+            </q-item>
+            <!-- Change name -->
+            <q-item dark clickable v-ripple>
+              <q-item-section>Change Name</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="drive_file_rename_outline" />
+              </q-item-section>
+            </q-item>
+            <q-separator spaced="1px" color="grey" />
+            <!-- Log Out -->
+            <q-item dark @click="logInOff" clickable class="bg-red-5" v-ripple>
+              <q-item-section>Log Out</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="logout" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-tab-panel>
+      </q-tab-panels>
+    </q-card>
     <!-- Modal -->
     <AddNewChannel v-model="showModalNewChannel" />
     <JoinChannel v-model="showModalJoinChannel" />
+    <AddNewContact v-model="showModalNewContact" />
   </div>
 </template>
 <script>
@@ -96,14 +160,21 @@ import { firebaseAuth } from "../../boot/firebase";
 import { mapActions, mapGetters, mapState } from "vuex";
 import AddNewChannel from "./../Modals/AddNewChannel.vue";
 import JoinChannel from "./../Modals/joinNewChannel.vue";
+import AddNewContact from "./../Modals/AddNewContact.vue";
 export default {
   methods: {
-    ...mapActions("User", ["selectChanelVuex", "logOff"]),
+    ...mapActions("User", ["selectChanelVuex", "logOff", "selectUserChatVuex"]),
     addNewChannel() {
       this.showModalNewChannel = true;
     },
+    addNewContact() {
+      this.showModalNewContact = true;
+    },
     selectChanel(chanel) {
       this.selectChanelVuex(chanel);
+    },
+    selectUserChat(contact) {
+      this.selectUserChatVuex(contact);
     },
     logInOff() {
       this.logOff();
@@ -113,18 +184,20 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("User", ["getChanels", "getCurrentChanel"]),
+    ...mapGetters("User", ["getChanels", "getCurrentChanel", "getContacts"]),
     ...mapGetters("Auth", ["getCurrentUser", "getChannelsOffline"]),
   },
   components: {
     AddNewChannel,
     JoinChannel,
+    AddNewContact,
   },
   data() {
     return {
       showModalNewChannel: false,
       showModalJoinChannel: false,
-      link: "hola",
+      showModalNewContact: false,
+      tab: "channels",
     };
   },
 };
