@@ -91,6 +91,25 @@
                 <q-icon name="add" color="green" />
               </q-item-section>
             </q-item>
+            <!-- Chats -->
+            <q-item
+              dark
+              v-for="(chat, key) in getChatList"
+              :key="key"
+              clickable
+              v-ripple
+              active-class="my-menu-link"
+              @click="selectUserChat(chat)"
+            >
+              <q-item-section v-if="key in getContacts">{{
+                chat.name
+              }}</q-item-section>
+              <q-item-section v-else>{{ key }}</q-item-section>
+              <q-item-section avatar>
+                <!-- <q-icon name="groups" /> -->
+                <q-icon name="circle" color="red" />
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-tab-panel>
         <!-- Settings -->
@@ -184,7 +203,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("User", ["getChanels", "getCurrentChanel", "getContacts"]),
+    ...mapGetters("User", [
+      "getChanels",
+      "getCurrentChanel",
+      "getContacts",
+      "getChatList",
+    ]),
     ...mapGetters("Auth", ["getCurrentUser", "getChannelsOffline"]),
   },
   components: {

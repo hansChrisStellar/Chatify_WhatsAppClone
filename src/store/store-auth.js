@@ -66,9 +66,11 @@ const actions = {
                 dispatch('User/fbReadChannels', null, { root: true })
                 dispatch('User/fbReadMessages', null, { root: true })
                 dispatch('User/fbReadContacts', null, { root: true })
+                dispatch('User/fbReadMessagesPrivate', null, { root: true })
+                dispatch('User/fbReadChatList', null, { root: true })
                 dispatch('fbReadDataUserChannelsOffline')
 
-                this.$router.push('/')
+                this.$router.push('/chats')
             } else {
                 commit('selectUser', false)
                 commit('clearAllData', false)

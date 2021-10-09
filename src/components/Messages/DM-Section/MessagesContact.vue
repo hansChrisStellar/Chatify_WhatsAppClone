@@ -1,9 +1,9 @@
 <template>
   <div class="baseMessageContainer">
     <MessageHeader />
-    <div class="q-pa-md bg-blue-grey-8 chatBoxBase">
+    <div class="q-pa-md bg-blue-grey-8 chatBoxBase" ref="checkMessagePrivate">
       <q-chat-message
-        v-for="(messageSection, index) in getMessages"
+        v-for="(messageSection, index) in getMessagesPrivateChat"
         :key="index"
         :name="messageSection.user.name"
         :avatar="messageSection.user.avatar"
@@ -11,7 +11,6 @@
         :stamp="messageSection.anotherTimeFormat"
         text-color="white"
         bg-color="light-blue-6"
-        ref="checkMessage"
         :sent="getCurrentUser.username === messageSection.user.name"
       />
     </div>
@@ -29,10 +28,21 @@ export default {
     MessageForm,
   },
   computed: {
-    ...mapGetters("User", ["getMessages"]),
+    ...mapGetters("User", ["getMessagesPrivateChat"]),
     ...mapGetters("Auth", ["getCurrentUser"]),
   },
-  methods: {},
+  watch: {
+    getMessagesPrivateChat: function (val) {
+      let pageChatPrivate = this.$refs.checkMessagePrivate;
+      setTimeout(() => {
+        pageChatPrivate.scrollTo(0, pageChatPrivate.scrollHeight);
+      }, 10);
+    },
+  },
+  mounted() {
+    let pageChatPrivate = this.$refs.checkMessagePrivate;
+    pageChatPrivate.scrollTo(0, pageChatPrivate.scrollHeight);
+  },
 };
 </script>
 <style lang="scss">

@@ -1,7 +1,7 @@
 <template>
   <div class="baseMessageContainer">
     <MessageHeader />
-    <div class="q-pa-md bg-blue-grey-8 chatBoxBase">
+    <div class="q-pa-md bg-blue-grey-8 chatBoxBase" ref="checkMessage">
       <q-chat-message
         v-for="(messageSection, index) in getMessages"
         :key="index"
@@ -11,7 +11,6 @@
         :stamp="messageSection.anotherTimeFormat"
         text-color="white"
         bg-color="light-blue-6"
-        ref="checkMessage"
         :sent="getCurrentUser.username === messageSection.user.name"
       />
     </div>
@@ -32,21 +31,40 @@ export default {
     ...mapGetters("User", ["getMessages"]),
     ...mapGetters("Auth", ["getCurrentUser"]),
   },
-  methods: {},
+  watch: {
+    getMessages: function (val) {
+      let pageChat = this.$refs.checkMessage;
+      setTimeout(() => {
+        pageChat.scrollTo(0, pageChat.scrollHeight);
+      }, 10);
+    },
+  },
+  mounted() {
+    let pageChat = this.$refs.checkMessage;
+    pageChat.scrollTo(0, pageChat.scrollHeight);
+  },
 };
 </script>
 <style lang="scss">
-.baseMessageContainer {
-  height: 100%;
-  width: 100%;
+// iPhone
+@media (max-width: 480px) {
+  .baseMessageContainer {
+    height: auto;
+  }
 }
-.chatBoxBase {
-  height: 40rem;
-  border-top: solid 1px grey;
-  border-bottom: solid 1px grey;
-  overflow-x: hidden;
-  overflow-y: auto;
+// Tablet
+@media (min-width: 480px) {
+  .baseMessageContainer {
+    height: auto;
+  }
 }
+// Desktop
+@media (min-width: 768px) {
+  .baseMessageContainer {
+    height: auto;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }

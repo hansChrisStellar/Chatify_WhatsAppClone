@@ -1,11 +1,34 @@
 import Auth from './../pages/Auth.vue'
 import Home from './../pages/Index.vue'
-
+import Chats from './../pages/Chats.vue'
+import ChatPrivate from './../pages/ChatPrivate.vue'
+import ChatGroups from './../pages/ChatGroups.vue'
+import Groups from './../pages/Groups.vue'
 const routes = [
   {
-    path: '/',
-    component: Home,
-    name: 'Home'
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '/chats',
+        component: Chats,
+        name: 'Chats'
+      },
+      {
+        path: '/groups',
+        component: Groups,
+        name: 'Groups',
+      },
+    ]
+  },
+  {
+    path: '/chatPrivate',
+    component: ChatPrivate,
+    name: 'ChatPrivate',
+  },
+  {
+    path: '/chatGroups',
+    component: ChatGroups,
+    name: 'ChatGroups',
   },
   {
     path: '/Auth',

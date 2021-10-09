@@ -33,9 +33,10 @@ export default {
     };
   },
   methods: {
-    ...mapActions("User", ["sendMessage"]),
+    ...mapActions("User", ["sendMessageToUser", "storageChatOnList"]),
     sendMessageForm() {
-      this.sendMessage(this.message);
+      this.storageChatOnList();
+      this.sendMessageToUser(this.message);
       this.message = "";
     },
   },

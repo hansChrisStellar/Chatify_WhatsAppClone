@@ -1,16 +1,8 @@
 <template>
-  <div class="flex flex-center">
-    <div class="row justify-between full-width bg-dark baseIndex">
-      <!-- Chat Box -->
-      <div class="col-10">
-        <div>
-          <Messages v-if="Object.values(currentChanel).length >= 1" />
-          <MessagesContact v-if="Object.values(currentUserChat).length >= 1" />
-        </div>
-      </div>
-      <!-- Side Panel -->
-      <SidePanel class="col-2 rightBar" />
-    </div>
+  <div class="indexBase">
+    <!-- Chat Box -->
+    <Messages v-if="Object.values(currentChanel).length >= 1" />
+    <MessagesContact v-if="Object.values(currentUserChat).length >= 1" />
   </div>
 </template>
 
@@ -24,7 +16,7 @@ export default {
   name: "Home",
   components: {
     Messages,
-    SidePanel,
+
     MessagesContact,
   },
   computed: {
@@ -33,10 +25,22 @@ export default {
 };
 </script>
 <style lang="scss">
-.rightBar {
-  border-left: 1px grey solid;
+// iPhone
+@media (max-width: 480px) {
+  .indexBase {
+    height: auto;
+  }
 }
-.baseIndex {
-  height: 100vh;
+// Tablet
+@media (min-width: 480px) {
+  .indexBase {
+    height: auto;
+  }
+}
+// Desktop
+@media (min-width: 768px) {
+  .indexBase {
+    height: auto;
+  }
 }
 </style>
