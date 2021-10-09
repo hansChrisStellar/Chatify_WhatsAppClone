@@ -53,10 +53,11 @@ const mutations = {
     //Change Tab Footer
     changeFooterTab(state, payload){
         state.tabFooter = payload
-    }
+    },
 }
 
 const actions = {
+    // Add New Channel
     addNewChanel({}, chanelForm){
         const IdChanel = uid()
         const idUser = firebaseAuth.currentUser.uid
@@ -79,6 +80,7 @@ const actions = {
             createdBy: user
         })
     },
+    // Add New Contact
     addNewContact({}, contactId){
         const contactRef = firebaseDb.ref('users/' + contactId)
         contactRef.on('value', snapshot => {
@@ -97,9 +99,11 @@ const actions = {
             })
         })
     },
+    // Select Channel
     selectChanelVuex({commit}, chanelSelected){
         commit('selectChanel', chanelSelected)
     },
+    // Select Private Chat
     selectUserChatVuex({commit}, contactSelected){
         commit('selectUserChat', contactSelected)
     },
@@ -294,11 +298,21 @@ const actions = {
         const fbRef = firebaseDb.ref('users/' + actualUserId + '/contacts')
         fbRef.once('value', snapshot => {
             let contacts = snapshot.val()
+            
             if (contacts !== null) {
                 commit('addContacts', contacts)
             } else {
                 commit('addContacts', {})
             }
+        })
+        
+        fbRef.on('value', snapshot => {
+            let contacts = snapshot.val()
+            commit('addContacts', contacts)
+        })
+        fbRef.on('value', snapshot => {
+            let contacts = snapshot.val()
+            commit('addContacts', contacts)
         })
     },
 

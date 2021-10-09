@@ -2,7 +2,7 @@
   <q-dialog>
     <q-card class="my-card">
       <div>Add new channel</div>
-      <q-form @submit="addChannel">
+      <q-form @keyup.enter.prevent="addChannel">
         <q-input v-model="infoChanel.name" label="Name of the channel" />
         <q-input label="About the channel" v-model="infoChanel.description" />
         <q-card-actions align="right">
@@ -28,6 +28,7 @@ export default {
     ...mapActions("User", ["addNewChanel"]),
     addChannel() {
       this.addNewChanel(this.infoChanel);
+      this.showModalNewChannel = false;
     },
   },
 };

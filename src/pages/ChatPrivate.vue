@@ -9,11 +9,10 @@
           <img :src="currentUserChat.img" :alt="currentUserChat.name" />
           {{ currentUserChat.name }}
         </q-avatar>
-        <div class="items-center q-pl-sm">
+        <div @click="seeInfo" class="items-center q-pl-sm cursor-pointer">
           {{ currentUserChat.name }}
         </div>
       </div>
-
       <!-- Input search -->
       <q-btn-dropdown
         class=""
@@ -41,8 +40,6 @@
       <q-chat-message
         v-for="(messageSection, index) in getMessagesPrivateChat"
         :key="index"
-        :name="messageSection.user.name"
-        :avatar="messageSection.user.avatar"
         :text="[messageSection.content]"
         :stamp="messageSection.anotherTimeFormat"
         text-color="white"
@@ -95,6 +92,9 @@ export default {
       this.sendMessageToUser(this.message);
       this.message = "";
     },
+    seeInfo() {
+      this.$router.push("/contactInfo");
+    },
   },
   watch: {
     getMessagesPrivateChat: function (val) {
@@ -131,7 +131,6 @@ export default {
   padding: 3.5rem 1rem;
   overflow-y: auto;
 }
-
 .formBase {
   position: fixed;
   bottom: 0;
