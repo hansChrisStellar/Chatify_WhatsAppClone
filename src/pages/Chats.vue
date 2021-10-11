@@ -7,25 +7,30 @@
         :key="key"
         clickable
         v-ripple
-        @click="selectUserChat(chat)"
+        @click="selectUserChat(chat.userInfo)"
         class="q-py-md"
       >
         <q-item-section avatar top>
           <q-avatar>
-            <img :src="chat.img" />
+            <img :src="chat.userInfo.img" />
           </q-avatar>
         </q-item-section>
 
         <q-item-section>
-          <q-item-section v-if="key in getContacts">{{
-            chat.name
-          }}</q-item-section>
-          <q-item-section v-else>{{ key }}</q-item-section>
-          <q-item-label caption>February 22nd, 2019</q-item-label>
+          <q-item-section>{{ chat.userInfo.name }}</q-item-section>
+          <!-- <q-item-section v-else>{{ key }}</q-item-section> -->
+          <q-item-label caption class="row">
+            <div>You:&nbsp;</div>
+            {{ chat.lastMessage.content }}
+          </q-item-label>
         </q-item-section>
 
         <q-item-section side>
-          <q-icon name="info" color="green" />
+          <q-badge
+            v-if="chat.messagesNotCheked"
+            color="green"
+            :label="Object.values(chat.messagesNotCheked).length"
+          />
         </q-item-section>
       </q-item>
       <q-separator color="grey-9" size="1px" />
@@ -53,6 +58,7 @@ export default {
   computed: {
     ...mapGetters("User", ["getContacts", "getChatList"]),
     ...mapGetters("Auth", ["getCurrentUser"]),
+    ...mapState("User", ["messagesPrivateChat", "messagesNotRead"]),
   },
   data() {
     return {
