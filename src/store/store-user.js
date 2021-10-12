@@ -200,6 +200,33 @@ const actions = {
         const userId = firebaseAuth.currentUser.uid
         // Access to the Actual User Logged In Chats
         const dbRef = firebaseDb.ref('users/' + userId + '/chats')
+        dbRef.on('child_added', snapshot => {
+            // Grab every single chat from the user
+            let chatFromUser = snapshot.val()
+            let chatKey = snapshot.key
+            // Make a look of every single chat
+            Object.values(chatFromUser).forEach((messageFromChat) => {
+                // If any message has message checked property on false goes to the array of not checked messages
+                if (messageFromChat.messageChecked === false) {
+                    // If theres any, we make a loop for the chat list of the actual user to send it to that object
+                    const chatListUserRef = firebaseDb.ref('users/' + userId + '/chatList')
+                    chatListUserRef.on('child_added', chatListFromUser => {
+                        if (chatKey === chatListFromUser.key) {
+                            const refMessageActualUser = firebaseDb.ref('users/' + userId + '/chatList/' + chatListFromUser.key + '/messagesNotCheked/' + messageFromChat.messageId)
+                            refMessageActualUser.set({
+                                anotherTimeFormat: messageFromChat.anotherTimeFormat,
+                                content: messageFromChat.content,
+                                messageChecked: messageFromChat.messageChecked,
+                                timestamp:  messageFromChat.timestamp,
+                                user: messageFromChat.user,
+                                messageId: messageFromChat.messageId,
+                                fullTimeYearFormat: messageFromChat.fullTimeYearFormat,
+                            })
+                        }
+                    })
+                }
+            })
+        })
         dbRef.on('child_changed', snapshot => {
             // Grab every single chat from the user
             let chatFromUser = snapshot.val()
@@ -215,12 +242,12 @@ const actions = {
                             const refMessageActualUser = firebaseDb.ref('users/' + userId + '/chatList/' + chatListFromUser.key + '/messagesNotCheked/' + messageFromChat.messageId)
                             refMessageActualUser.set({
                                 anotherTimeFormat: messageFromChat.anotherTimeFormat,
-                                fullTimeYearFormat: messageFromChat.fullTimeYearFormat,
                                 content: messageFromChat.content,
                                 messageChecked: messageFromChat.messageChecked,
                                 timestamp:  messageFromChat.timestamp,
                                 user: messageFromChat.user,
-                                messageId: messageFromChat.messageId
+                                messageId: messageFromChat.messageId,
+                                fullTimeYearFormat: messageFromChat.fullTimeYearFormat,
                             })
                         }
                     })

@@ -44,9 +44,9 @@
             </div>
           </q-item-label>
         </q-item-section>
-
-        <q-item-section side class="q-gutter-sm">
-          <div v-if="chat.lastMessage" style="font-size: 11px">
+        <!-- Problem -->
+        <q-item-section side class="q-gutter-sm" v-if="chat.lastMessage">
+          <div style="font-size: 11px">
             {{ chat.lastMessage.fullTimeYearFormat }}
           </div>
           <q-badge
@@ -54,9 +54,13 @@
             color="cyan-3"
             text-color="black"
             rounded
-            :label="Object.values(chat.messagesNotCheked).length"
-          />
+          >
+            <div>
+              {{ Object.keys(chat.messagesNotCheked).length }}
+            </div>
+          </q-badge>
         </q-item-section>
+        <!-- Problem -->
       </q-item>
     </q-list>
   </div>
