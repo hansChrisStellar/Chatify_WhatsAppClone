@@ -9,9 +9,13 @@
         color="blue"
         @click="this.$router.go(-1)"
       />
-      <div>
+      <div
+        v-if="currentUserChat.idUser in getContacts"
+        class="ellipsis-2-lines"
+      >
         {{ currentUserChat.name }}
       </div>
+      <div v-else class="ellipsis-2-lines">{{ currentUserChat.idUser }}</div>
 
       <q-btn class="" icon="delete" dense flat color="blue" size="12px" />
     </div>
@@ -25,6 +29,7 @@ import { mapGetters, mapState } from "vuex";
 export default {
   computed: {
     ...mapState("User", ["currentUserChat"]),
+    ...mapGetters("User", ["getContacts"]),
   },
 };
 </script>

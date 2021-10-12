@@ -10,7 +10,12 @@
           {{ currentUserChat.name }}
         </q-avatar>
         <div @click="seeInfo" class="items-center q-pl-sm cursor-pointer">
-          {{ currentUserChat.name }}
+          <div v-if="currentUserChat.idUser in getContacts">
+            {{ currentUserChat.name }}
+          </div>
+          <div v-else class="ellipsis" style="max-width: 10rem">
+            {{ currentUserChat.idUser }}
+          </div>
         </div>
       </div>
       <!-- Input search -->
@@ -43,7 +48,11 @@
         :text="[messageSection.content]"
         :stamp="messageSection.anotherTimeFormat"
         text-color="white"
-        bg-color="light-blue-6"
+        :bg-color="
+          messageSection.user.name === getCurrentUser.username
+            ? 'grey-9'
+            : 'cyan-6'
+        "
         :sent="getCurrentUser.username === messageSection.user.name"
       />
     </div>
@@ -81,12 +90,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("User", ["getMessagesPrivateChat"]),
+    ...mapGetters("User", ["getMessagesPrivateChat", "getContacts"]),
     ...mapGetters("Auth", ["getCurrentUser"]),
     ...mapState("User", ["currentUserChat"]),
   },
   methods: {
-    ...mapActions("User", ["sendMessageToUser", "storageChatOnList"]),
+    ...mapActions("User", [
+      "sendMessageToUser",
+      "storageChatOnList",
+      "clearAllMessagesNotChecked",
+    ]),
     sendMessageForm() {
       this.storageChatOnList();
       this.sendMessageToUser(this.message);
@@ -98,6 +111,7 @@ export default {
   },
   watch: {
     getMessagesPrivateChat: function (val) {
+      this.clearAllMessagesNotChecked();
       let pageChatPrivate = this.$refs.checkMessagePrivate;
       setTimeout(() => {
         pageChatPrivate.scrollTo(0, pageChatPrivate.scrollHeight);

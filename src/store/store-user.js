@@ -7,7 +7,6 @@ const state = {
     currentUserChat: {},
     messages: {},
     messagesPrivateChat: {},
-    messagesNotRead: {},
     contacts: {},
     chatList: {},
     tabFooter: 'chats',
@@ -46,6 +45,7 @@ const mutations = {
     addChatList(state, chats){
         state.chatList[chats.chatKey] = chats.chatInfo
     },
+    // Clear All Data
     clearAllData(state, payload){
         state.currentChanel = {}
         state.chanels = {}
@@ -58,10 +58,6 @@ const mutations = {
     changeFooterTab(state, payload){
         state.tabFooter = payload
     },
-    // Send Messages not checked to array
-    sendMessagesToNotCheckedArray(state, message){
-        state.messagesNotRead[message.messageKey] = message.messageInfo
-    }
 }
 
 const actions = {
@@ -143,6 +139,7 @@ const actions = {
         const currentUser = state.currentUserChat.idUser
         const actualDate = new Date().getTime()
         const anotherTimeFormat = new Date().getHours() + ':' + new Date().getMinutes()
+        const fullTimeYearFormat = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear()
         // Actual user
         const refMessageActualUser = firebaseDb.ref('users/' + currentUserId + '/chats/' + currentUser + '/' + randomId)
         refMessageActualUser.set({
@@ -150,6 +147,7 @@ const actions = {
             timestamp: actualDate,
             anotherTimeFormat: anotherTimeFormat,
             messageId: randomId,
+            fullTimeYearFormat: fullTimeYearFormat,
             user: {
                 avatar: firebaseAuth.currentUser.photoURL,
                 id: firebaseAuth.currentUser.uid,
@@ -163,6 +161,7 @@ const actions = {
             timestamp: actualDate,
             anotherTimeFormat: anotherTimeFormat,
             messageId: randomId,
+            fullTimeYearFormat: fullTimeYearFormat,
             messageChecked: false,
             user: {
                 avatar: firebaseAuth.currentUser.photoURL,
@@ -174,7 +173,8 @@ const actions = {
         dispatch('getLastMessageOfEveryChat')
     },
     //Store Chat on List
-    storageChatOnList({state}){
+    storageChatOnList({state, dispatch}){
+        
         //Information
         const currentUserId = firebaseAuth.currentUser.uid
         const currentUserAnother = state.currentUserChat.idUser
@@ -193,29 +193,34 @@ const actions = {
             img: firebaseAuth.currentUser.photoURL,
             name: firebaseAuth.currentUser.displayName
         })
+
     },
     // Check Globally Messages not Readed 
     checkMessagesNotReaded({commit, state}){
         const userId = firebaseAuth.currentUser.uid
         // Access to the Actual User Logged In Chats
         const dbRef = firebaseDb.ref('users/' + userId + '/chats')
-        dbRef.on('child_added', snapshot => {
+        dbRef.on('child_changed', snapshot => {
             // Grab every single chat from the user
-            let chatsFromUser = snapshot.val()
+            let chatFromUser = snapshot.val()
             let chatKey = snapshot.key
-            Object.values(chatsFromUser).forEach((messageFromChat) => {
+            // Make a look of every single chat
+            Object.values(chatFromUser).forEach((messageFromChat) => {
                 // If any message has message checked property on false goes to the array of not checked messages
                 if (messageFromChat.messageChecked === false) {
                     // If theres any, we make a loop for the chat list of the actual user to send it to that object
-                    Object.values(state.chatList).forEach((userFromChatList, key) => {
-                        if (chatKey === userFromChatList.idUser) {
-                            const refMessageActualUser = firebaseDb.ref('users/' + userId + '/chatList/' + chatKey + '/messagesNotCheked/' + messageFromChat.messageId)
+                    const chatListUserRef = firebaseDb.ref('users/' + userId + '/chatList')
+                    chatListUserRef.on('child_added', chatListFromUser => {
+                        if (chatKey === chatListFromUser.key) {
+                            const refMessageActualUser = firebaseDb.ref('users/' + userId + '/chatList/' + chatListFromUser.key + '/messagesNotCheked/' + messageFromChat.messageId)
                             refMessageActualUser.set({
                                 anotherTimeFormat: messageFromChat.anotherTimeFormat,
+                                fullTimeYearFormat: messageFromChat.fullTimeYearFormat,
                                 content: messageFromChat.content,
                                 messageChecked: messageFromChat.messageChecked,
                                 timestamp:  messageFromChat.timestamp,
-                                user: messageFromChat.user
+                                user: messageFromChat.user,
+                                messageId: messageFromChat.messageId
                             })
                         }
                     })
@@ -251,6 +256,7 @@ const actions = {
                         anotherTimeFormat: lastMessageFromChat.anotherTimeFormat,
                         content: lastMessageFromChat.content,
                         messageId: lastMessageFromChat.messageId,
+                        fullTimeYearFormat: lastMessageFromChat.fullTimeYearFormat,
                         timestamp: lastMessageFromChat.timestamp,
                         user: {
                             avatar: lastMessageFromChat.user.avatar,
@@ -264,6 +270,7 @@ const actions = {
                     lastMessageFromOtherUserRef.set({
                         anotherTimeFormat: lastMessageFromChat.anotherTimeFormat,
                         content: lastMessageFromChat.content,
+                        fullTimeYearFormat: lastMessageFromChat.fullTimeYearFormat,
                         messageId: lastMessageFromChat.messageId,
                         timestamp: lastMessageFromChat.timestamp,
                         user: {
@@ -278,6 +285,45 @@ const actions = {
             })
         }
         )
+    },
+    // Clear all the messages not checked
+    clearAllMessagesNotChecked({commit, state}){
+        const userId = firebaseAuth.currentUser.uid
+        // First, we loop all the chats we have on the current user
+        const chatsFromCurrentUser = firebaseDb.ref('users/' + userId + '/chats')
+        chatsFromCurrentUser.on('child_added', snapshot => {
+            let chatFromUser = snapshot.val()
+            // Loop through the chat in order to see all the messages
+            Object.values(chatFromUser).forEach((messageFromChat) => {
+                // If any of the message has the property 'Message Checked' it will be changed 
+                if (messageFromChat.hasOwnProperty('messageChecked')) {
+                    messageFromChat.messageChecked = true
+                    const everyMessageFromActualChat = firebaseDb.ref('users/' + userId + '/chats/' + snapshot.key + '/' + messageFromChat.messageId)
+                    // After it gets changed goes to the Firebase Database
+                    everyMessageFromActualChat.set({
+                        anotherTimeFormat: messageFromChat.anotherTimeFormat,
+                        content: messageFromChat.content,
+                        messageChecked: messageFromChat.messageChecked,
+                        messageId: messageFromChat.messageId,
+                        fullTimeYearFormat: messageFromChat.fullTimeYearFormat,
+                        timestamp: messageFromChat.timestamp,
+                        user: {
+                            avatar: messageFromChat.user.avatar,
+                            id: messageFromChat.user.id,
+                            name: messageFromChat.user.name
+                        }
+                    })
+                    // After it gets stored in the Database, lets erase the messages not checked stablished on the Firebase Database
+
+                    // First, we loop to every Chat List object in the current user Firebase
+                    const chatListObjectInFirebase = firebaseDb.ref('users/' + userId + '/chatList')
+                    chatListObjectInFirebase.on('child_added', chatsFromUser => {
+                        // We access to the messageNotChecked object of the current user in order to remove everything
+                        const messageNotCheckedFromCurrentUser = firebaseDb.ref('users/' + userId + '/chatList/' + chatsFromUser.key + '/messagesNotCheked').remove()
+                    })
+                }
+            })
+        })
     },
     //Change Tab Footer
     changeTab({commit}, payload){

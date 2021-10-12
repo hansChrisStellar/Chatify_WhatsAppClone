@@ -26,7 +26,6 @@
       </q-item-section>
     </q-item>
   </div>
-  <chatWindow class="chatWindowBase" />
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
@@ -40,52 +39,17 @@ export default {
       this.logOff();
     },
   },
-  components: {
-    chatWindow: require("./DesktopWindow.vue").default,
-  },
+  components: {},
 };
 </script>
 <style lang="scss">
 //iPhone
 @media (max-width: 480px) {
-  .imgUserInfoBase {
-    width: 100%;
-    height: 15rem;
-    padding: 1rem 3rem;
-  }
-  .imgUserInfo {
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-  }
-  .chatsBase {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  .chatWindowBase {
-    display: none;
-  }
 }
 //Tablet
 @media (min-width: 480px) {
-  .chatsBase {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  .chatWindowBase {
-    display: none;
-  }
 }
 //Desktop
 @media (min-width: 768px) {
-  .chatsBase {
-    display: none;
-  }
-  .chatWindowBase {
-    display: flex;
-    position: relative;
-  }
 }
 </style>

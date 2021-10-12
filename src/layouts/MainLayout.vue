@@ -1,23 +1,17 @@
 <template>
-  <q-layout view="hHh lpR fFr">
+  <q-layout view="lHh lpR lFf" style="font-family: 'Montserrat'">
     <!-- Head Toolbar -->
-    <q-header elevated class="bg-primary text-white">
+    <q-header elevated class="bg-black text-white">
       <q-toolbar>
         <!-- Title -->
-        <q-toolbar-title> {{ this.$route.name }} </q-toolbar-title>
-        <!-- Button Right -->
-        <q-btn
-          class="buttonRight"
-          dense
-          flat
-          round
-          icon="menu"
-          @click="rightDrawerOpen = !rightDrawerOpen"
-        />
+        <q-toolbar-title class="text-h5 text-weight-bold">
+          {{ this.$route.name }}
+        </q-toolbar-title>
         <!-- Button Left -->
         <q-btn
           class="buttonLeft"
           dense
+          color="cyan-3"
           flat
           round
           icon="create"
@@ -33,10 +27,11 @@
         overlay
         elevated
         class="bg-black"
+        style="border-right: solid 1px grey"
       >
-        <q-banner dense class="bg-grey-9">
-          <div class="justify-between row items-center">
-            <div class="q-pl-sm">New Chat</div>
+        <q-banner dense class="bg-grey-9 q-pb-md">
+          <div class="justify-between row items-center q-pb-sm">
+            <div class="q-pl-sm text-white text-weight-medium">New Chat</div>
             <q-btn
               color="red"
               dense
@@ -45,35 +40,84 @@
               @click="leftDrawerOpen = !leftDrawerOpen"
             />
           </div>
-          <q-input label="Search" dense rounded standout>
+          <q-input
+            style="
+              -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
+              box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
+            "
+            color="white"
+            bg-color="grey-6"
+            label="Search"
+            class="text-white"
+            label-color="white"
+            dense
+            standout
+          >
             <template v-slot:prepend>
-              <q-icon name="search" />
+              <q-icon name="search" color="white" />
             </template>
           </q-input>
         </q-banner>
+        <q-separator color="grey-8" size="1px" />
+
         <!-- Add contacts -->
-        <q-item dark @click="addNewContact" clickable v-ripple>
-          <q-item-section>Add Contact</q-item-section>
-          <q-item-section avatar>
-            <!-- <q-icon name="groups" /> -->
-            <q-icon name="add" color="green" />
+        <q-item
+          clickable
+          v-ripple
+          dark
+          @click="addNewContact"
+          class=""
+          style="border-bottom: grey solid 0.5px"
+        >
+          <q-item-section avatar top>
+            <q-avatar>
+              <q-icon name="person_add" color="cyan-3" />
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-section>Add Contact</q-item-section>
           </q-item-section>
         </q-item>
-        <!-- Create Channel -->
-        <q-item dark @click="addNewChannel" clickable v-ripple>
-          <q-item-section>Create Channel</q-item-section>
-          <q-item-section avatar>
-            <q-icon name="add" />
+        <!-- Create Group -->
+        <q-item
+          clickable
+          v-ripple
+          @click="addNewChannel"
+          dark
+          class=""
+          style="border-bottom: grey solid 0.5px"
+        >
+          <q-item-section avatar top>
+            <q-avatar>
+              <q-icon name="groups" color="cyan-3" />
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-section>Create a Group Chat</q-item-section>
           </q-item-section>
         </q-item>
-        <!-- Join Channel -->
-        <q-item dark @click="joinChannel" clickable v-ripple>
-          <q-item-section>Join Channel</q-item-section>
-          <q-item-section avatar>
-            <q-icon name="add" />
+        <!-- Join Group Chat -->
+        <q-item
+          clickable
+          v-ripple
+          @click="joinChannel"
+          dark
+          class=""
+          style="border-bottom: grey solid 0.5px"
+        >
+          <q-item-section avatar top>
+            <q-avatar>
+              <q-icon name="reply_all" color="cyan-3" />
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-section>Join Group</q-item-section>
           </q-item-section>
         </q-item>
-        <q-separator color="grey-3" size="1px" />
+
         <!-- Contacts -->
         <q-item
           dark
@@ -91,220 +135,20 @@
           </q-item-section>
           <q-item-section>{{ contact.name }}</q-item-section>
         </q-item>
+        <!-- Modal -->
+        <AddNewChannel v-model="showModalNewChannel" />
+        <JoinChannel v-model="showModalJoinChannel" />
+        <AddNewContact v-model="showModalNewContact" />
       </q-drawer>
     </div>
-    <!-- Right Side -->
-    <div class="rightSide">
-      <q-drawer v-model="rightDrawerOpen" side="right" overlay elevated>
-        <div class="bg-grey-10 relative-position rightPanel">
-          <!-- Profile section -->
-          <div
-            class="
-              q-pa-md
-              text-center
-              row
-              flex
-              bg-grey-10
-              items-center
-              justify-between
-              headerName
-            "
-          >
-            <div
-              class="
-                justify-center
-                text-white
-                items-center
-                text-weight-light
-                row
-              "
-            >
-              <div class="ellipsis">
-                {{ getCurrentUser.username }}
-              </div>
-            </div>
-            <q-avatar size="35px">
-              <img :src="getCurrentUser.photoURL" />
-            </q-avatar>
-          </div>
-          <!-- Tabs -->
-          <q-card>
-            <!-- Upper Tabs -->
-            <q-tabs
-              v-model="tabFooter"
-              dense
-              class="bg-grey-10 text-grey-7"
-              active-color="primary"
-              indicator-color="purple"
-              align="justify"
-            >
-              <q-tab
-                name="groups"
-                icon="groups"
-                @click="changeJustTab('groups')"
-              />
-              <q-tab
-                name="chats"
-                icon="all_inbox"
-                @click="changeJustTab('chats')"
-              />
-              <q-tab
-                name="settings"
-                icon="settings"
-                @click="changeJustTab('settings')"
-              />
-            </q-tabs>
-            <!-- Bottom Tabs -->
-            <q-tab-panels
-              v-model="tabFooter"
-              animated
-              class="text-white no-border no-border-radius"
-            >
-              <!-- Channels -->
-              <q-tab-panel name="groups" class="no-padding">
-                <q-list class="bg-grey-10 text-primary">
-                  <q-item
-                    dark
-                    v-for="(chanel, key) in getChannelsOffline"
-                    :key="key"
-                    @click="selectChanel(chanel)"
-                    clickable
-                    v-ripple
-                    :active="chanel.name == getCurrentChanel.name"
-                    active-class="my-menu-link"
-                  >
-                    <q-item-section>{{ chanel.name }}</q-item-section>
-                    <q-item-section avatar>
-                      <!-- <q-icon name="groups" /> -->
-                      <q-icon name="circle" color="red" />
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-tab-panel>
-              <!-- Direct Messages -->
-              <q-tab-panel name="chats" class="no-padding">
-                <q-list class="bg-grey-10 text-white">
-                  <!-- Contacts -->
-                  <q-item
-                    dark
-                    v-for="(contact, key) in getContacts"
-                    :key="key"
-                    clickable
-                    v-ripple
-                    active-class="my-menu-link"
-                    @click="selectUserChatDesktop(contact)"
-                  >
-                    <q-item-section>{{ contact.name }}</q-item-section>
-                    <q-item-section avatar>
-                      <!-- <q-icon name="groups" /> -->
-                      <q-icon name="circle" color="red" />
-                    </q-item-section>
-                  </q-item>
-                  <!-- Add contacts -->
-                  <q-item dark @click="addNewContact" clickable v-ripple>
-                    <q-item-section>Add Contact</q-item-section>
-                    <q-item-section avatar>
-                      <!-- <q-icon name="groups" /> -->
-                      <q-icon name="add" color="green" />
-                    </q-item-section>
-                  </q-item>
-                  <!-- Chats -->
-                  <q-item
-                    dark
-                    v-for="(chat, key) in getChatList"
-                    :key="key"
-                    clickable
-                    v-ripple
-                    active-class="my-menu-link"
-                    @click="selectUserChat(chat)"
-                  >
-                    <q-item-section v-if="key in getContacts">{{
-                      chat.name
-                    }}</q-item-section>
-                    <q-item-section v-else>{{ key }}</q-item-section>
-                    <q-item-section avatar>
-                      <!-- <q-icon name="groups" /> -->
-                      <q-icon name="circle" color="red" />
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-tab-panel>
-              <!-- Settings -->
-              <q-tab-panel name="settings" class="no-padding">
-                <q-list class="bg-grey-10 text-primary">
-                  <!-- Create Channel -->
-                  <q-item
-                    dark
-                    @click="addNewChannel"
-                    clickable
-                    class="bg-green-5"
-                    v-ripple
-                  >
-                    <q-item-section>Create Channel</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="add" />
-                    </q-item-section>
-                  </q-item>
-                  <!-- Join Channel -->
-                  <q-item
-                    dark
-                    @click="joinChannel"
-                    clickable
-                    class="bg-green-3"
-                    v-ripple
-                  >
-                    <q-item-section>Join Channel</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="add" />
-                    </q-item-section>
-                  </q-item>
-                  <q-separator spaced="1px" color="grey" />
-                  <!-- Change avatar -->
-                  <q-item dark clickable v-ripple>
-                    <q-item-section>Change Avatar</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="account_circle" />
-                    </q-item-section>
-                  </q-item>
-                  <!-- Change name -->
-                  <q-item dark clickable v-ripple>
-                    <q-item-section>Change Name</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="drive_file_rename_outline" />
-                    </q-item-section>
-                  </q-item>
-                  <q-separator spaced="1px" color="grey" />
-                  <!-- Log Out -->
-                  <q-item
-                    dark
-                    @click="logInOff"
-                    clickable
-                    class="bg-red-5"
-                    v-ripple
-                  >
-                    <q-item-section>Log Out</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="logout" />
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-tab-panel>
-            </q-tab-panels>
-          </q-card>
-          <!-- Modal -->
-          <AddNewChannel v-model="showModalNewChannel" />
-          <JoinChannel v-model="showModalJoinChannel" />
-          <AddNewContact v-model="showModalNewContact" />
-        </div>
-      </q-drawer>
-    </div>
+
     <!-- Footer -->
-    <q-footer reveal elevated class="bg-grey-8 text-white footerLayout">
+    <q-footer reveal elevated class="bg-cyan-3 text-white">
       <q-tabs
         v-model="tabFooter"
         dense
         align="justify"
-        class="bg-primary text-white shadow-2"
+        class="bg-cyan-3 text-black shadow-2"
         :breakpoint="0"
       >
         <q-tab
@@ -412,40 +256,11 @@ export default {
 }
 //iPhone
 @media (max-width: 480px) {
-  .leftSide {
-  }
-  .rightSide {
-    display: none;
-  }
-  .buttonRight {
-    display: none;
-  }
 }
 //Tablet
 @media (min-width: 480px) {
-  .rightSide {
-    display: none;
-  }
-  .buttonRight {
-    display: none;
-  }
 }
 //Desktop
 @media (min-width: 768px) {
-  .leftSide {
-    display: none;
-  }
-  .rightSide {
-    display: flex;
-  }
-  .buttonRight {
-    display: flex;
-  }
-  .buttonLeft {
-    display: none;
-  }
-  .footerLayout {
-    display: none;
-  }
 }
 </style>

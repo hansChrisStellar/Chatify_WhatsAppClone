@@ -17,7 +17,6 @@
       </q-item>
     </q-list>
   </div>
-  <chatWindow class="chatWindowBase" />
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -33,42 +32,17 @@ export default {
       this.$router.push("/chatGroups");
     },
   },
-  components: {
-    chatWindow: require("./DesktopWindow.vue").default,
-  },
+  components: {},
 };
 </script>
 <style lang="scss">
 //iPhone
 @media (max-width: 480px) {
-  .chatsBase {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  .chatWindowBase {
-    display: none;
-  }
 }
 //Tablet
 @media (min-width: 480px) {
-  .chatsBase {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  .chatWindowBase {
-    display: none;
-  }
 }
 //Desktop
 @media (min-width: 768px) {
-  .chatsBase {
-    display: none;
-  }
-  .chatWindowBase {
-    display: flex;
-    position: relative;
-  }
 }
 </style>

@@ -71,7 +71,6 @@ const actions = {
                 dispatch('User/getLastMessageOfEveryChat', null, { root: true })
                 dispatch('User/checkMessagesNotReaded', null, { root: true })
                 dispatch('fbReadDataUserChannelsOffline')
-
                 this.$router.push('/chats')
             } else {
                 commit('selectUser', false)

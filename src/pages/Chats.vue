@@ -1,14 +1,18 @@
 <template>
   <div class="chatsBase">
-    <q-list class="bg-grey-10 text-white">
+    <q-list dark separator class="bg-black text-white">
       <q-item
-        dark
         v-for="(chat, key) in getChatList"
         :key="key"
         clickable
         v-ripple
-        @click="selectUserChat(chat.userInfo)"
+        @click="
+          selectUserChat(chat.userInfo);
+          clearMessagesNotChecked();
+        "
+        dark
         class="q-py-md"
+        style="border-bottom: grey solid 0.5px"
       >
         <q-item-section avatar top>
           <q-avatar>
@@ -17,42 +21,62 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-section>{{ chat.userInfo.name }}</q-item-section>
-          <!-- <q-item-section v-else>{{ key }}</q-item-section> -->
+          <q-item-section
+            v-if="chat.userInfo.idUser in getContacts"
+            class="textShortOrLargeUpper text-weight-bold"
+            >{{ chat.userInfo.name }}</q-item-section
+          >
+          <q-item-section
+            v-else
+            class="textShortOrLargeUpper text-weight-bold ellipsis"
+            >{{ key }}</q-item-section
+          >
           <q-item-label caption class="row">
-            <div>You:&nbsp;</div>
-            {{ chat.lastMessage.content }}
+            <div class="row" v-if="chat.lastMessage">
+              <div
+                v-if="chat.lastMessage.user.name === getCurrentUser.username"
+              >
+                You:&nbsp;
+              </div>
+              <div class="ellipsis textShortOrLarge">
+                {{ chat.lastMessage.content }}
+              </div>
+            </div>
           </q-item-label>
         </q-item-section>
 
-        <q-item-section side>
+        <q-item-section side class="q-gutter-sm">
+          <div v-if="chat.lastMessage" style="font-size: 11px">
+            {{ chat.lastMessage.fullTimeYearFormat }}
+          </div>
           <q-badge
             v-if="chat.messagesNotCheked"
-            color="green"
+            color="cyan-3"
+            text-color="black"
+            rounded
             :label="Object.values(chat.messagesNotCheked).length"
           />
         </q-item-section>
       </q-item>
-      <q-separator color="grey-9" size="1px" />
     </q-list>
   </div>
-  <chatWindow class="chatWindowBase" />
 </template>
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
-  components: {
-    chatWindow: require("./DesktopWindow.vue").default,
-  },
+  components: {},
   methods: {
-    ...mapActions("User", ["selectUserChatVuex"]),
+    ...mapActions("User", ["selectUserChatVuex", "clearAllMessagesNotChecked"]),
     addNewContact() {
       this.showModalNewContact = true;
     },
     selectUserChat(contact) {
       this.selectUserChatVuex(contact);
       this.$router.push("/chatPrivate");
+    },
+    clearMessagesNotChecked() {
+      this.clearAllMessagesNotChecked();
     },
   },
   computed: {
@@ -68,37 +92,34 @@ export default {
 };
 </script>
 <style lang="scss">
+.chatsBase {
+  font-family: "Montserrat";
+}
 //iPhone
 @media (max-width: 480px) {
-  .chatsBase {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+  .textShortOrLargeUpper {
+    max-width: 10rem;
   }
-  .chatWindowBase {
-    display: none;
+  .textShortOrLarge {
+    max-width: 7rem;
   }
 }
 //Tablet
 @media (min-width: 480px) {
-  .chatsBase {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+  .textShortOrLargeUpper {
+    max-width: 20rem;
   }
-  .chatWindowBase {
-    display: none;
+  .textShortOrLarge {
+    max-width: 20rem;
   }
 }
 //Desktop
 @media (min-width: 768px) {
-  .chatsBase {
-    display: none;
+  .textShortOrLargeUpper {
+    max-width: 40rem;
   }
-  .chatWindowBase {
-    display: flex;
-    position: relative;
-    flex-direction: column;
+  .textShortOrLarge {
+    max-width: 40rem;
   }
 }
 </style>
