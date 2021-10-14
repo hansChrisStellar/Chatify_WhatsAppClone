@@ -68,8 +68,8 @@ const actions = {
                 dispatch('User/fbReadContacts', null, { root: true })
                 dispatch('User/fbReadMessagesPrivate', null, { root: true })
                 dispatch('User/fbReadChatList', null, { root: true })
-                dispatch('User/getLastMessageOfEveryChat', null, { root: true })
-                dispatch('User/checkMessagesNotReaded', null, { root: true })
+                
+                dispatch('User/insertMessagesNotChecked', null, { root: true })
                 dispatch('fbReadDataUserChannelsOffline')
                 this.$router.push('/chats')
             } else {

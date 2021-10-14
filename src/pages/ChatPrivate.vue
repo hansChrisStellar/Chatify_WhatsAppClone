@@ -99,6 +99,7 @@ export default {
       "sendMessageToUser",
       "storageChatOnList",
       "clearAllMessagesNotChecked",
+      "addNewContact",
     ]),
     sendMessageForm() {
       this.storageChatOnList();
@@ -140,6 +141,7 @@ export default {
   justify-content: space-between;
   padding: 0 1rem;
 }
+
 .chatBoxBase {
   height: 100vh;
   padding: 3.5rem 1rem;

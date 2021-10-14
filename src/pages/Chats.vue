@@ -11,56 +11,78 @@
           clearMessagesNotChecked();
         "
         dark
-        class="q-py-md"
+        class="no-padding"
         style="border-bottom: grey solid 0.5px"
       >
-        <q-item-section avatar top>
-          <q-avatar>
-            <img :src="chat.userInfo.img" />
-          </q-avatar>
-        </q-item-section>
-
-        <q-item-section>
-          <q-item-section
-            v-if="chat.userInfo.idUser in getContacts"
-            class="textShortOrLargeUpper text-weight-bold"
-            >{{ chat.userInfo.name }}</q-item-section
-          >
-          <q-item-section
-            v-else
-            class="textShortOrLargeUpper text-weight-bold ellipsis"
-            >{{ key }}</q-item-section
-          >
-          <q-item-label caption class="row">
-            <div class="row" v-if="chat.lastMessage">
-              <div
-                v-if="chat.lastMessage.user.name === getCurrentUser.username"
-              >
-                You:&nbsp;
+        <q-slide-item
+          right-color="red"
+          v-if="chat"
+          @right="eraseChat(key)"
+          class="full-width no-padding bg-black col"
+        >
+          <template v-slot:right>
+            <q-icon name="delete" />
+          </template>
+          <!-- Content -->
+          <div class="row q-pa-sm items-center" v-if="chat.userInfo">
+            <!-- Img -->
+            <div class="q-pr-sm">
+              <q-avatar>
+                <img :src="chat.userInfo.img" />
+              </q-avatar>
+            </div>
+            <!-- Right Side -->
+            <div class="col">
+              <!-- Name and full time year -->
+              <div class="row items-center justify-between">
+                <!-- Name -->
+                <div
+                  v-if="chat.userInfo.idUser in getContacts"
+                  class="textShortOrLargeUpper text-weight-bold"
+                >
+                  {{ chat.userInfo.name }}
+                </div>
+                <div
+                  v-else
+                  class="textShortOrLargeUpper text-weight-bold ellipsis"
+                >
+                  {{ key }}
+                </div>
+                <!-- Full time year -->
+                <div style="font-size: 11px" v-if="chat.lastMessage">
+                  {{ chat.lastMessage.fullTimeYearFormat }}
+                </div>
               </div>
-              <div class="ellipsis textShortOrLarge">
-                {{ chat.lastMessage.content }}
+              <!-- Content and notification -->
+              <div class="row items-end justify-between">
+                <!-- Content -->
+                <div class="row" v-if="chat.lastMessage">
+                  <div
+                    v-if="
+                      chat.lastMessage.user.name === getCurrentUser.username
+                    "
+                  >
+                    You:&nbsp;
+                  </div>
+                  <div
+                    class="ellipsis textShortOrLarge"
+                    v-if="chat.lastMessage"
+                  >
+                    {{ chat.lastMessage.content }}
+                  </div>
+                </div>
+                <!-- Notification -->
+                <div side class="q-gutter-sm" v-if="chat.messagesNotChecked">
+                  <q-badge color="cyan-3" text-color="black" rounded>
+                    <div>
+                      {{ Object.keys(chat.messagesNotChecked).length }}
+                    </div>
+                  </q-badge>
+                </div>
               </div>
             </div>
-          </q-item-label>
-        </q-item-section>
-        <!-- Problem -->
-        <q-item-section side class="q-gutter-sm" v-if="chat.lastMessage">
-          <div style="font-size: 11px">
-            {{ chat.lastMessage.fullTimeYearFormat }}
           </div>
-          <q-badge
-            v-if="chat.messagesNotCheked"
-            color="cyan-3"
-            text-color="black"
-            rounded
-          >
-            <div>
-              {{ Object.keys(chat.messagesNotCheked).length }}
-            </div>
-          </q-badge>
-        </q-item-section>
-        <!-- Problem -->
+        </q-slide-item>
       </q-item>
     </q-list>
   </div>
@@ -71,7 +93,11 @@ import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: {},
   methods: {
-    ...mapActions("User", ["selectUserChatVuex", "clearAllMessagesNotChecked"]),
+    ...mapActions("User", [
+      "selectUserChatVuex",
+      "clearAllMessagesNotChecked",
+      "eraseChat",
+    ]),
     addNewContact() {
       this.showModalNewContact = true;
     },

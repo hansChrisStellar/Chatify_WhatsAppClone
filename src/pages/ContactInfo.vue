@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Header -->
     <div class="headerBase">
       <q-btn
         dense
@@ -19,17 +20,67 @@
 
       <q-btn class="" icon="delete" dense flat color="blue" size="12px" />
     </div>
+    <!-- Img User -->
     <div class="contentBase">
       <img :src="currentUserChat.img" class="imgBaseUser" />
     </div>
+    <!-- User Info -->
+    <q-list dense class="rounded-borders text-white">
+      <!-- Username -->
+      <q-item v-ripple>
+        <q-item-section avatar top>
+          <q-avatar>
+            <q-icon name="face" color="cyan-3" />
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-section>{{ currentUserChat.name }}</q-item-section>
+        </q-item-section>
+      </q-item>
+
+      <!-- Id User -->
+      <q-item v-ripple>
+        <q-item-section avatar top>
+          <q-avatar>
+            <q-icon name="fingerprint" color="cyan-3" />
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-section>{{ currentUserChat.idUser }}</q-item-section>
+        </q-item-section>
+      </q-item>
+
+      <!-- Add Contact -->
+      <q-item
+        clickable
+        v-if="!(currentUserChat.idUser in getContacts)"
+        v-ripple
+        @click="addNewContact(currentUserChat.idUser)"
+      >
+        <q-item-section avatar top>
+          <q-avatar>
+            <q-icon name="person_add" color="cyan-3" />
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-section>Add Contact</q-item-section>
+        </q-item-section>
+      </q-item>
+    </q-list>
   </div>
 </template>
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   computed: {
     ...mapState("User", ["currentUserChat"]),
     ...mapGetters("User", ["getContacts"]),
+  },
+  methods: {
+    ...mapActions("User", ["addNewContact"]),
   },
 };
 </script>
