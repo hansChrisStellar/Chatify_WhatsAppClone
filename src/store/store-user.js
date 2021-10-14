@@ -93,20 +93,38 @@ const actions = {
     addNewContact({}, contactId){
         const contactRef = firebaseDb.ref('users/' + contactId)
         contactRef.on('value', snapshot => {
-            const userInformation = snapshot.val()
+            let userInformation = snapshot.val()
             let userInfoPass = {
-                name: userInformation.username,
-                img: userInformation.photoURL,
+                name: userInformation.username.nameUser,
+                img: userInformation.userImg.photoURL,
                 idUser: snapshot.key
             }
             const actualUserId = firebaseAuth.currentUser.uid
             const dbRef = firebaseDb.ref('users/' + actualUserId + '/contacts/' + contactId)
             dbRef.set({
-                name: userInfoPass.name,
-                img: userInfoPass.img,
-                idUser: userInfoPass.idUser
+                username: {
+                    userName: userInfoPass.name,
+                },
+                userImg: {
+                    photoURL: userInfoPass.img,
+                },
+                idUser: {
+                    idUser: userInfoPass.idUser
+                }
             })
         })
+    },
+    // Erase Contact
+    eraseContact({commit, state}, contactId){
+        const userId = firebaseAuth.currentUser.uid
+        // If theres just one value on contacts will make an empty object 
+        if (Object.values(state.contacts).length == 1) {
+            let contacts = {}
+            const contactRef = firebaseDb.ref('users/' + userId + '/contacts/' + contactId).remove()
+            commit('addContacts', contacts)
+        } else if (Object.values(state.contacts).length > 1) {
+            const contactRef = firebaseDb.ref('users/' + userId + '/contacts/' + contactId).remove()
+        }
     },
     // Select Channel
     selectChanelVuex({commit}, chanelSelected){
@@ -141,7 +159,7 @@ const actions = {
         //Information
         let randomId = uid()
         const currentUserId = firebaseAuth.currentUser.uid
-        const currentUser = state.currentUserChat.idUser
+        const currentUser = state.currentUserChat.idUser.idUser
         const actualDate = new Date().getTime()
         const anotherTimeFormat = new Date().getHours() + ':' + new Date().getMinutes()
         const fullTimeYearFormat = new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear()
@@ -182,21 +200,33 @@ const actions = {
         
         //Information
         const currentUserId = firebaseAuth.currentUser.uid
-        const currentUserAnother = state.currentUserChat.idUser
+        const chattingUser = state.currentUserChat.idUser.idUser
 
         //Actual User
-        const refMessageActualUser = firebaseDb.ref('users/' + currentUserId + '/chatList/' + currentUserAnother + '/userInfo')
+        const refMessageActualUser = firebaseDb.ref('users/' + currentUserId + '/chatList/' + chattingUser + '/userInfo')
         refMessageActualUser.set({
-            idUser: state.currentUserChat.idUser,
-            img: state.currentUserChat.img,
-            name: state.currentUserChat.name
+            username: {
+                userName: state.currentUserChat.username.userName
+            },
+            userImg: {
+                photoURL: state.currentUserChat.userImg.photoURL,
+            },
+            idUser: {
+                idUser: state.currentUserChat.idUser.idUser,
+            }
         })
         //Another User
-        const refMessageAnotherUser = firebaseDb.ref('users/' + currentUserAnother + '/chatList/' + currentUserId + '/userInfo')
+        const refMessageAnotherUser = firebaseDb.ref('users/' + chattingUser + '/chatList/' + currentUserId + '/userInfo')
         refMessageAnotherUser.set({
-            idUser: firebaseAuth.currentUser.uid,
-            img: firebaseAuth.currentUser.photoURL,
-            name: firebaseAuth.currentUser.displayName
+            username: {
+                userName: firebaseAuth.currentUser.displayName
+            },
+            userImg: {
+                photoURL: firebaseAuth.currentUser.photoURL,
+            },
+            idUser: {
+                idUser: firebaseAuth.currentUser.uid,
+            }
         })
 
     },
@@ -361,6 +391,16 @@ const actions = {
         const chatListReferenceFirebase = firebaseDb.ref('users/' + idUser + '/chatList/' + idChat)
         chatListReferenceFirebase.remove()
     },
+    // Change Name 
+    changeUsername({}, newName){
+        const currentUser = firebaseAuth.currentUser.updateProfile({
+            displayName: newName
+        })
+        const userId = firebaseAuth.currentUser.uid
+        const userInfoDb = firebaseDb.ref('users/' + userId + '/username').set({
+            nameUser: newName
+        })
+    },
     joinAnotherChannel({state, commit, dispatch}, channel){
         const userId = firebaseAuth.currentUser.uid
         const channelsRef = firebaseDb.ref('channels')
@@ -476,23 +516,38 @@ const actions = {
     fbReadContacts({state, commit}){
         const actualUserId = firebaseAuth.currentUser.uid
         const fbRef = firebaseDb.ref('users/' + actualUserId + '/contacts')
+        // Logging Initial
         fbRef.once('value', snapshot => {
             let contacts = snapshot.val()
-            
             if (contacts !== null) {
                 commit('addContacts', contacts)
             } else {
                 commit('addContacts', {})
             }
         })
-        
+        // When adding a new contact
         fbRef.on('value', snapshot => {
             let contacts = snapshot.val()
             commit('addContacts', contacts)
         })
-        fbRef.on('value', snapshot => {
-            let contacts = snapshot.val()
-            commit('addContacts', contacts)
+        // When a contact makes a change
+        const userNameChangeRef = firebaseDb.ref('users')
+        userNameChangeRef.on('child_changed', user => {
+            let userName = user.val()
+            // Contacts
+            const contactsFromActualUser = firebaseDb.ref('users/' + actualUserId + '/contacts/' + user.key + '/username')
+            if (user.key in state.contacts) {
+                contactsFromActualUser.set({
+                    userName: userName.username.nameUser
+                })
+            }
+            // Chat List
+            const chatListFromActualUser = firebaseDb.ref('users/' + actualUserId + '/chatList/' + user.key + '/userInfo/username')
+            if (user.key in state.chatList) {
+                chatListFromActualUser.set({
+                    userName: userName.username.nameUser
+                })
+            }
         })
     },
 
@@ -520,11 +575,11 @@ const getters = {
     },
     // Private Chat Messages
     getMessagesPrivateChat: (state) => {
-        let actualChatUserId = state.currentUserChat.idUser
+        let actualChatUserId = state.currentUserChat
         let messages = []
         let usersMessages = state.messagesPrivateChat
-        for (const userId in usersMessages){
-            if (actualChatUserId === userId) {
+        for (const userId in usersMessages) {
+            if (actualChatUserId.idUser.idUser === userId) {
                 Object.values(usersMessages[userId]).forEach(message => {
                     messages.push(message)
                 })
@@ -538,7 +593,12 @@ const getters = {
         return state.currentChanel
     },
     getContacts: (state) => {
-        return state.contacts
+        if (state.contacts === null) {
+            let contacts = {}
+            return contacts
+        } else {
+            return state.contacts
+        }
     },
     getCurrentUserChat: (state) => {
         return state.currentUserChat

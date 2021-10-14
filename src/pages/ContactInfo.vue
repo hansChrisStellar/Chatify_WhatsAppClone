@@ -11,18 +11,19 @@
         @click="this.$router.go(-1)"
       />
       <div
-        v-if="currentUserChat.idUser in getContacts"
+        v-if="currentUserChat.idUser.idUser in contacts"
         class="ellipsis-2-lines"
       >
-        {{ currentUserChat.name }}
+        {{ currentUserChat.username.userName }}
       </div>
-      <div v-else class="ellipsis-2-lines">{{ currentUserChat.idUser }}</div>
-
-      <q-btn class="" icon="delete" dense flat color="blue" size="12px" />
+      <div v-else class="ellipsis-2-lines">
+        {{ currentUserChat.idUser.idUser }}
+      </div>
+      <q-icon name="person" color="primary" size="20px" />
     </div>
     <!-- Img User -->
     <div class="contentBase">
-      <img :src="currentUserChat.img" class="imgBaseUser" />
+      <img :src="currentUserChat.userImg.photoURL" class="imgBaseUser" />
     </div>
     <!-- User Info -->
     <q-list dense class="rounded-borders text-white">
@@ -35,7 +36,9 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-section>{{ currentUserChat.name }}</q-item-section>
+          <q-item-section>{{
+            currentUserChat.username.userName
+          }}</q-item-section>
         </q-item-section>
       </q-item>
 
@@ -48,16 +51,16 @@
         </q-item-section>
 
         <q-item-section>
-          <q-item-section>{{ currentUserChat.idUser }}</q-item-section>
+          <q-item-section>{{ currentUserChat.idUser.idUser }}</q-item-section>
         </q-item-section>
       </q-item>
 
       <!-- Add Contact -->
       <q-item
         clickable
-        v-if="!(currentUserChat.idUser in getContacts)"
+        v-if="!(currentUserChat.idUser.idUser in contacts)"
         v-ripple
-        @click="addNewContact(currentUserChat.idUser)"
+        @click="addNewContact(currentUserChat.idUser.idUser)"
       >
         <q-item-section avatar top>
           <q-avatar>
@@ -69,6 +72,24 @@
           <q-item-section>Add Contact</q-item-section>
         </q-item-section>
       </q-item>
+
+      <!-- Erase Contact -->
+      <q-item
+        clickable
+        v-else
+        v-ripple
+        @click="eraseContact(currentUserChat.idUser.idUser)"
+      >
+        <q-item-section avatar top>
+          <q-avatar>
+            <q-icon name="delete" color="cyan-3" />
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-section>Erase Contact</q-item-section>
+        </q-item-section>
+      </q-item>
     </q-list>
   </div>
 </template>
@@ -76,11 +97,11 @@
 import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   computed: {
-    ...mapState("User", ["currentUserChat"]),
+    ...mapState("User", ["currentUserChat", "contacts"]),
     ...mapGetters("User", ["getContacts"]),
   },
   methods: {
-    ...mapActions("User", ["addNewContact"]),
+    ...mapActions("User", ["addNewContact", "eraseContact"]),
   },
 };
 </script>

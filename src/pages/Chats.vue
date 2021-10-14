@@ -1,6 +1,6 @@
 <template>
   <div class="chatsBase">
-    <q-list dark separator class="bg-black text-white">
+    <q-list class="bg-white text-black">
       <q-item
         v-for="(chat, key) in getChatList"
         :key="key"
@@ -10,15 +10,14 @@
           selectUserChat(chat.userInfo);
           clearMessagesNotChecked();
         "
-        dark
         class="no-padding"
-        style="border-bottom: grey solid 0.5px"
+        style="border-bottom: lightgrey solid 0.5px"
       >
         <q-slide-item
           right-color="red"
           v-if="chat"
           @right="eraseChat(key)"
-          class="full-width no-padding bg-black col"
+          class="full-width no-padding bg-white col"
         >
           <template v-slot:right>
             <q-icon name="delete" />
@@ -28,7 +27,7 @@
             <!-- Img -->
             <div class="q-pr-sm">
               <q-avatar>
-                <img :src="chat.userInfo.img" />
+                <img :src="chat.userInfo.userImg.photoURL" />
               </q-avatar>
             </div>
             <!-- Right Side -->
@@ -37,10 +36,10 @@
               <div class="row items-center justify-between">
                 <!-- Name -->
                 <div
-                  v-if="chat.userInfo.idUser in getContacts"
+                  v-if="chat.userInfo.idUser.idUser in getContacts"
                   class="textShortOrLargeUpper text-weight-bold"
                 >
-                  {{ chat.userInfo.name }}
+                  {{ chat.userInfo.username.userName }}
                 </div>
                 <div
                   v-else

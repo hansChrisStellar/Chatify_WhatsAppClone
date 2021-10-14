@@ -1,10 +1,10 @@
 <template>
   <q-layout view="lHh lpR lFf" style="font-family: 'Montserrat'">
     <!-- Head Toolbar -->
-    <q-header elevated class="bg-black text-white">
+    <q-header elevated class="bg-white text-grey-9">
       <q-toolbar>
         <!-- Title -->
-        <q-toolbar-title class="text-h5 text-weight-bold">
+        <q-toolbar-title class="text-h5 text-weight-regular">
           {{ this.$route.name }}
         </q-toolbar-title>
         <!-- Button Left -->
@@ -19,7 +19,7 @@
         />
       </q-toolbar>
     </q-header>
-    <!-- Left Side -->
+    <!-- Left Bar -->
     <div class="leftSide">
       <q-drawer
         v-model="leftDrawerOpen"
@@ -119,21 +119,63 @@
         </q-item>
 
         <!-- Contacts -->
-        <q-item
-          dark
-          v-for="(contact, key) in getContacts"
-          :key="key"
-          clickable
-          v-ripple
-          active-class="my-menu-link"
-          @click="selectUserChat(contact)"
-        >
-          <q-item-section avatar>
+        <q-item dark v-for="(contact, key) in getContacts" :key="key">
+          <q-item-section
+            class="cursor-pointer"
+            avatar
+            @click="selectUserChat(contact)"
+          >
             <q-avatar>
-              <img :src="contact.img" />
+              <img :src="contact.userImg.photoURL" />
             </q-avatar>
           </q-item-section>
-          <q-item-section>{{ contact.name }}</q-item-section>
+          <q-item-section
+            @click="selectUserChat(contact)"
+            class="cursor-pointer"
+            >{{ contact.username.userName }}</q-item-section
+          >
+          <q-item-section side
+            ><q-btn-dropdown
+              no-icon-animation
+              dropdown-icon="more_vert"
+              color="cyan"
+              dense
+              flat
+            >
+              <q-list>
+                <!-- Invite to a group -->
+                <q-item clickable v-close-popup>
+                  <q-item-section avatar>
+                    <q-avatar
+                      icon="group_add"
+                      color="primary"
+                      text-color="white"
+                    />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>Invite user to a group</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <!-- Erase Contact -->
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="eraseContact(contact.idUser.idUser)"
+                >
+                  <q-item-section avatar>
+                    <q-avatar
+                      icon="delete"
+                      color="primary"
+                      text-color="white"
+                    />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>Erase contact</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown></q-item-section
+          >
         </q-item>
         <!-- Modal -->
         <AddNewChannel v-model="showModalNewChannel" />
@@ -143,12 +185,12 @@
     </div>
 
     <!-- Footer -->
-    <q-footer reveal elevated class="bg-cyan-3 text-white">
+    <q-footer reveal elevated>
       <q-tabs
         v-model="tabFooter"
         dense
         align="justify"
-        class="bg-cyan-3 text-black shadow-2"
+        class="bg-white text-cyan-8 shadow-2"
         :breakpoint="0"
       >
         <q-tab
@@ -183,6 +225,7 @@ export default {
       "logOff",
       "selectUserChatVuex",
       "changeTab",
+      "eraseContact",
     ]),
     // Change tab and page
     changeTabFr(value) {

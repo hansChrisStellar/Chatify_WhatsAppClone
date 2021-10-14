@@ -5,16 +5,20 @@
       <!-- Title Channel -->
       <div class="items-center row">
         <q-btn dense flat icon="arrow_back_ios" @click="this.$router.go(-1)" />
+        <!-- Img -->
         <q-avatar size="28px">
-          <img :src="currentUserChat.img" :alt="currentUserChat.name" />
-          {{ currentUserChat.name }}
+          <img
+            :src="currentUserChat.userImg.photoURL"
+            :alt="currentUserChat.username.userName"
+          />
         </q-avatar>
+        <!-- Name -->
         <div @click="seeInfo" class="items-center q-pl-sm cursor-pointer">
-          <div v-if="currentUserChat.idUser in getContacts">
-            {{ currentUserChat.name }}
+          <div v-if="currentUserChat.idUser.idUser in getContacts">
+            {{ currentUserChat.username.userName }}
           </div>
           <div v-else class="ellipsis" style="max-width: 10rem">
-            {{ currentUserChat.idUser }}
+            {{ currentUserChat.idUser.idUser }}
           </div>
         </div>
       </div>
@@ -49,11 +53,11 @@
         :stamp="messageSection.anotherTimeFormat"
         text-color="white"
         :bg-color="
-          messageSection.user.name === getCurrentUser.username
+          messageSection.user.name === getCurrentUser.username.userName
             ? 'grey-9'
             : 'cyan-6'
         "
-        :sent="getCurrentUser.username === messageSection.user.name"
+        :sent="getCurrentUser.username.userName === messageSection.user.name"
       />
     </div>
     <!-- Form -->

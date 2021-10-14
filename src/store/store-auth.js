@@ -28,13 +28,18 @@ const actions = {
                 const userId = firebaseAuth.currentUser.uid
                 const refDb = firebaseDb.ref('users' + '/' + userId)
                 createdUser.user.updateProfile({
+
                     displayName: user.username,
                     photoURL: `http://gravatar.com/avatar/${uid(createdUser.user.email)}?d=identicon`
                 })
                 .then(() => {
                     refDb.set({
-                        username: createdUser.user.displayName,
-                        photoURL: `http://gravatar.com/avatar/${uid(createdUser.user.email)}?d=identicon`
+                        username: {
+                            userName: createdUser.user.displayName
+                        },
+                        userImg: {
+                            photoURL: `http://gravatar.com/avatar/${uid(createdUser.user.email)}?d=identicon`
+                        }
                     })
                 })
 
@@ -57,12 +62,21 @@ const actions = {
             if (user) {
                 const userId = firebaseAuth.currentUser.uid
                 const UserRef = firebaseDb.ref('users')
+                // When user is created
                 UserRef.on('child_added', snapshot => {
                     let user = snapshot.val()
                     if (snapshot.key === userId) {
                         commit('selectUser', user)
                     }
                 })
+                // When user info is changed
+                UserRef.on('child_changed', snapshot => {
+                    let user = snapshot.val()
+                    if (snapshot.key === userId) {
+                        commit('selectUser', user)
+                    }
+                })
+
                 dispatch('User/fbReadChannels', null, { root: true })
                 dispatch('User/fbReadMessages', null, { root: true })
                 dispatch('User/fbReadContacts', null, { root: true })
