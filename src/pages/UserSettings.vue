@@ -6,7 +6,7 @@
       <img :src="getCurrentUser.userImg.photoURL" class="imgUserInfo" />
     </div>
     <!-- Username -->
-    <q-item class="currentUserName text-white">
+    <q-item class="currentUserName text-black">
       <q-item-section v-if="!barName">
         <q-item-label lines="1">{{
           getCurrentUser.username.nameUser
@@ -15,9 +15,12 @@
       <q-item-section v-else>
         <q-item-label lines="1"
           ><q-input
-            dark
+            color="cyan-5"
             v-model="newUsername"
-            @keyup.enter.prevent="changeUsername(newUsername)"
+            @keyup.enter.prevent="
+              changeUsername(newUsername);
+              barName = !barName;
+            "
             label="Change your name"
             dense
         /></q-item-label>

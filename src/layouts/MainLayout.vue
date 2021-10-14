@@ -26,12 +26,12 @@
         side="left"
         overlay
         elevated
-        class="bg-black"
+        class="bg-white"
         style="border-right: solid 1px grey"
       >
-        <q-banner dense class="bg-grey-9 q-pb-md">
+        <q-banner dense class="bg-white q-pb-md shadow-2">
           <div class="justify-between row items-center q-pb-sm">
-            <div class="q-pl-sm text-white text-weight-medium">New Chat</div>
+            <div class="q-pl-sm text-black text-weight-medium">New Chat</div>
             <q-btn
               color="red"
               dense
@@ -41,34 +41,22 @@
             />
           </div>
           <q-input
-            style="
-              -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
-              box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
-            "
             color="white"
-            bg-color="grey-6"
+            bg-color="grey-3"
             label="Search"
-            class="text-white"
-            label-color="white"
+            class="text-black"
+            label-color="black"
             dense
             standout
           >
             <template v-slot:prepend>
-              <q-icon name="search" color="white" />
+              <q-icon name="search" color="black" />
             </template>
           </q-input>
         </q-banner>
-        <q-separator color="grey-8" size="1px" />
 
         <!-- Add contacts -->
-        <q-item
-          clickable
-          v-ripple
-          dark
-          @click="addNewContact"
-          class=""
-          style="border-bottom: grey solid 0.5px"
-        >
+        <q-item clickable v-ripple @click="addNewContact" class="">
           <q-item-section avatar top>
             <q-avatar>
               <q-icon name="person_add" color="cyan-3" />
@@ -79,15 +67,9 @@
             <q-item-section>Add Contact</q-item-section>
           </q-item-section>
         </q-item>
+        <q-separator color="grey-3" size="1px" />
         <!-- Create Group -->
-        <q-item
-          clickable
-          v-ripple
-          @click="addNewChannel"
-          dark
-          class=""
-          style="border-bottom: grey solid 0.5px"
-        >
+        <!-- <q-item clickable v-ripple @click="addNewChannel" class="">
           <q-item-section avatar top>
             <q-avatar>
               <q-icon name="groups" color="cyan-3" />
@@ -97,16 +79,9 @@
           <q-item-section>
             <q-item-section>Create a Group Chat</q-item-section>
           </q-item-section>
-        </q-item>
+        </q-item> -->
         <!-- Join Group Chat -->
-        <q-item
-          clickable
-          v-ripple
-          @click="joinChannel"
-          dark
-          class=""
-          style="border-bottom: grey solid 0.5px"
-        >
+        <!-- <q-item clickable v-ripple @click="joinChannel" class="">
           <q-item-section avatar top>
             <q-avatar>
               <q-icon name="reply_all" color="cyan-3" />
@@ -116,10 +91,10 @@
           <q-item-section>
             <q-item-section>Join Group</q-item-section>
           </q-item-section>
-        </q-item>
+        </q-item> -->
 
         <!-- Contacts -->
-        <q-item dark v-for="(contact, key) in getContacts" :key="key">
+        <q-item v-for="(contact, key) in getContacts" :key="key">
           <q-item-section
             class="cursor-pointer"
             avatar
@@ -198,7 +173,7 @@
           icon="question_answer"
           @click="changeTabFr('chats')"
         />
-        <q-tab name="groups" icon="groups" @click="changeTabFr('groups')" />
+        <!-- <q-tab name="groups" icon="groups" @click="changeTabFr('groups')" /> -->
         <q-tab
           name="settings"
           icon="settings"

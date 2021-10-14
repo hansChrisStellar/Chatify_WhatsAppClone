@@ -1,7 +1,7 @@
 <template>
   <div class="chatBase">
     <!-- Header -->
-    <div class="headerChatBase">
+    <div class="headerChatBase bg-white shadow-5">
       <!-- Title Channel -->
       <div class="items-center row">
         <q-btn dense flat icon="arrow_back_ios" @click="this.$router.go(-1)" />
@@ -51,38 +51,40 @@
         :key="index"
         :text="[messageSection.content]"
         :stamp="messageSection.anotherTimeFormat"
-        text-color="white"
+        text-color="black"
         :bg-color="
-          messageSection.user.name === getCurrentUser.username.userName
-            ? 'grey-9'
-            : 'cyan-6'
+          messageSection.user.name === getCurrentUser.username.nameUser
+            ? 'cyan-4'
+            : 'cyan-1'
         "
-        :sent="getCurrentUser.username.userName === messageSection.user.name"
+        :sent="getCurrentUser.username.nameUser === messageSection.user.name"
       />
     </div>
     <!-- Form -->
-    <q-form class="formBase">
+    <div class="formBase bg-white shadow-5 row">
       <q-input
-        outlined
-        v-model="message"
+        rounded
         maxlength="300"
         autocomplete="off"
+        color="cyan-9"
         dense
-        style="width: 100%"
+        outlined
         @keyup.enter.prevent="sendMessageForm"
-      >
-        <template v-slot:prepend>
-          <q-icon name="place" />
-        </template>
-        <template v-slot:append>
-          <q-icon
-            name="send"
-            @click.prevent="sendMessageForm"
-            class="cursor-pointer"
-          />
-        </template>
-      </q-input>
-    </q-form>
+        v-model="message"
+        label="Type something"
+        class="col-10"
+      />
+
+      <q-btn
+        icon="send"
+        flat
+        rounded
+        :color="disabled === true ? 'grey-6' : 'cyan-9'"
+        :disable="disabled === true"
+        @click.prevent="sendMessageForm"
+        class="cursor-pointer col-2"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -91,6 +93,7 @@ export default {
   data() {
     return {
       message: "",
+      disabled: true,
     };
   },
   computed: {
@@ -122,6 +125,13 @@ export default {
         pageChatPrivate.scrollTo(0, pageChatPrivate.scrollHeight);
       }, 10);
     },
+    message: function (val) {
+      if (val.length >= 1) {
+        this.disabled = false;
+      } else {
+        this.disabled = true;
+      }
+    },
   },
   mounted() {
     let pageChatPrivate = this.$refs.checkMessagePrivate;
@@ -140,7 +150,7 @@ export default {
   top: 0;
   width: 100%;
   height: 3rem;
-  background: red;
+
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
@@ -150,12 +160,91 @@ export default {
   height: 100vh;
   padding: 3.5rem 1rem;
   overflow-y: auto;
+  background-color: silver;
+  background-image: radial-gradient(
+      circle at 100% 150%,
+      silver 24%,
+      white 24%,
+      white 28%,
+      silver 28%,
+      silver 36%,
+      white 36%,
+      white 40%,
+      transparent 40%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 0 150%,
+      silver 24%,
+      white 24%,
+      white 28%,
+      silver 28%,
+      silver 36%,
+      white 36%,
+      white 40%,
+      transparent 40%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      white 10%,
+      silver 10%,
+      silver 23%,
+      white 23%,
+      white 30%,
+      silver 30%,
+      silver 43%,
+      white 43%,
+      white 50%,
+      silver 50%,
+      silver 63%,
+      white 63%,
+      white 71%,
+      transparent 71%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 100% 50%,
+      white 5%,
+      silver 5%,
+      silver 15%,
+      white 15%,
+      white 20%,
+      silver 20%,
+      silver 29%,
+      white 29%,
+      white 34%,
+      silver 34%,
+      silver 44%,
+      white 44%,
+      white 49%,
+      transparent 49%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 0 50%,
+      white 5%,
+      silver 5%,
+      silver 15%,
+      white 15%,
+      white 20%,
+      silver 20%,
+      silver 29%,
+      white 29%,
+      white 34%,
+      silver 34%,
+      silver 44%,
+      white 44%,
+      white 49%,
+      transparent 49%,
+      transparent
+    );
+  background-size: 100px 50px;
 }
 .formBase {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: red;
   display: flex;
   padding: 0 1rem;
   justify-content: space-between;
