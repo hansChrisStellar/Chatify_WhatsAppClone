@@ -120,7 +120,6 @@ export default {
       "sendMessageToUser",
       "storageChatOnList",
       "clearAllMessagesNotChecked",
-      "addNewContact",
     ]),
     sendMessageForm() {
       if (this.message.length >= 1) {
@@ -200,7 +199,7 @@ export default {
   .chatBoxBase {
     z-index: 1;
     height: 90%;
-    padding: 1rem 1rem 3.8rem;
+    padding: 1rem 1rem 5.5rem;
     overflow-y: auto;
     display: flex;
 
@@ -300,6 +299,36 @@ export default {
 }
 //Tablet
 @media (min-width: 480px) {
+  .timeBase {
+    font-size: 0.7rem;
+    color: grey;
+    text-align-last: right;
+  }
+  .chatBase {
+    font-family: "Montserrat";
+    position: relative;
+    height: 100vh;
+  }
+  .messageSent {
+    width: max-content;
+    max-width: 12rem;
+    text-align: left;
+    margin: 0.2rem 0;
+    margin-left: auto;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    overflow-wrap: break-word;
+  }
+  .messageReceived {
+    width: max-content;
+    max-width: 12rem;
+    text-align: right;
+    margin: 0.2rem 0;
+    margin-right: auto;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    overflow-wrap: break-word;
+  }
   .chatBase {
     position: relative;
     height: 100vh;
@@ -412,6 +441,36 @@ export default {
 }
 //Desktop
 @media (min-width: 768px) {
+  .timeBase {
+    font-size: 0.7rem;
+    color: grey;
+    text-align-last: right;
+  }
+  .chatBase {
+    font-family: "Montserrat";
+    position: relative;
+    height: 100vh;
+  }
+  .messageSent {
+    width: max-content;
+    max-width: 12rem;
+    text-align: left;
+    margin: 0.2rem 0;
+    margin-left: auto;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    overflow-wrap: break-word;
+  }
+  .messageReceived {
+    width: max-content;
+    max-width: 12rem;
+    text-align: right;
+    margin: 0.2rem 0;
+    margin-right: auto;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    overflow-wrap: break-word;
+  }
   .chatBase {
     position: relative;
     height: 100vh;

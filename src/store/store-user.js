@@ -19,6 +19,12 @@ const mutations = {
     addContacts(state, contacts){
         state.contacts = contacts
     },
+    addNewContact(state, contact){
+        state.contacts[contact.idUser.idUser] = contact
+    },
+    eraseUser(state, contactId){
+        delete state.contacts[contactId]
+    },
     addChanelsFirtsInstance(state, chanels){
         state.chanels = chanels
     },
@@ -90,31 +96,6 @@ const actions = {
             createdBy: user
         })
     },
-    // Add New Contact
-    addNewContact({}, contactId){
-        const contactRef = firebaseDb.ref('users/' + contactId)
-        contactRef.on('value', snapshot => {
-            let userInformation = snapshot.val()
-            let userInfoPass = {
-                name: userInformation.username.nameUser,
-                img: userInformation.userImg.photoURL,
-                idUser: snapshot.key
-            }
-            const actualUserId = firebaseAuth.currentUser.uid
-            const dbRef = firebaseDb.ref('users/' + actualUserId + '/contacts/' + contactId)
-            dbRef.set({
-                username: {
-                    userName: userInfoPass.name,
-                },
-                userImg: {
-                    photoURL: userInfoPass.img,
-                },
-                idUser: {
-                    idUser: userInfoPass.idUser
-                }
-            })
-        })
-    },
     // Erase Contact
     eraseContact({commit, state}, contactId){
         const userId = firebaseAuth.currentUser.uid
@@ -126,6 +107,40 @@ const actions = {
         } else if (Object.values(state.contacts).length > 1) {
             const contactRef = firebaseDb.ref('users/' + userId + '/contacts/' + contactId).remove()
         }
+    },
+    //Add Contact
+    addContact({}, contact){
+        const actualUserId = firebaseAuth.currentUser.uid;
+        const contactActualUserRef = firebaseDb.ref(
+          "users/" + actualUserId + "/contacts/" + contact.idUser
+        ).set({
+            username: {
+                userName: contact.name,
+              },
+            userImg: {
+                photoURL: contact.img,
+              },
+            idUser: {
+                idUser: contact.idUser,
+              },
+        })
+    },
+    // Different way to add user
+    differentWayToAddContact({commit}, contact){
+        const actualUserId = firebaseAuth.currentUser.uid;
+        const contactActualUserRef = firebaseDb.ref(
+          "users/" + actualUserId + "/contacts/" + contact.idUser.idUser
+        ).set({
+            username: {
+                userName: contact.username.userName,
+              },
+            userImg: {
+                photoURL: contact.userImg.photoURL,
+              },
+            idUser: {
+                idUser: contact.idUser.idUser,
+              },
+        })
     },
     // Select Channel
     selectChanelVuex({commit}, chanelSelected){
@@ -518,20 +533,21 @@ const actions = {
     // Read Contacts
     fbReadContacts({state, commit}){
         const actualUserId = firebaseAuth.currentUser.uid
-        const fbRef = firebaseDb.ref('users/' + actualUserId + '/contacts')
-        // Logging Initial
-        fbRef.once('value', snapshot => {
+        const contactsRef = firebaseDb.ref('users/' + actualUserId + '/contacts/')
+        // Logging Inittial / When adding a new user
+        contactsRef.on('child_added', snapshot => {
             let contacts = snapshot.val()
             if (contacts !== null) {
-                commit('addContacts', contacts)
+                let newUser = snapshot.val()
+                commit('addNewContact', newUser)
             } else {
                 commit('addContacts', {})
             }
         })
-        // When adding a new contact
-        fbRef.on('value', snapshot => {
-            let contacts = snapshot.val()
-            commit('addContacts', contacts)
+        // When erasing a contact
+        contactsRef.on('child_removed', snapshot => {
+            let erasedUser = snapshot.key
+            commit('eraseUser', erasedUser)
         })
         // When a contact makes a change
         const userNameChangeRef = firebaseDb.ref('users')

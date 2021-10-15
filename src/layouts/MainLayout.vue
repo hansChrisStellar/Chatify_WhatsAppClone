@@ -56,7 +56,7 @@
         </q-banner>
 
         <!-- Add contacts -->
-        <q-item clickable v-ripple @click="addNewContact" class="">
+        <q-item clickable v-ripple @click="openNewContact" class="">
           <q-item-section avatar top>
             <q-avatar>
               <q-icon name="person_add" color="cyan-3" />
@@ -155,7 +155,10 @@
         <!-- Modal -->
         <AddNewChannel v-model="showModalNewChannel" />
         <JoinChannel v-model="showModalJoinChannel" />
-        <AddNewContact v-model="showModalNewContact" />
+        <AddNewContact
+          v-model="showModalNewContact"
+          @closeModal="closeTheModal($event)"
+        />
       </q-drawer>
     </div>
 
@@ -195,6 +198,9 @@ import JoinChannel from "./../components/Modals/joinNewChannel.vue";
 import AddNewContact from "./../components/Modals/AddNewContact.vue";
 export default {
   methods: {
+    closeTheModal(event) {
+      this.showModalNewContact = event;
+    },
     ...mapActions("User", [
       "selectChanelVuex",
       "logOff",
@@ -230,7 +236,7 @@ export default {
     addNewChannel() {
       this.showModalNewChannel = true;
     },
-    addNewContact() {
+    openNewContact() {
       this.showModalNewContact = true;
     },
     joinChannel() {

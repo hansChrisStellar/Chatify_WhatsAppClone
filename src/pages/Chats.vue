@@ -97,9 +97,6 @@ export default {
       "clearAllMessagesNotChecked",
       "eraseChat",
     ]),
-    addNewContact() {
-      this.showModalNewContact = true;
-    },
     selectUserChat(contact) {
       this.selectUserChatVuex(contact);
       this.$router.push("/chatPrivate");

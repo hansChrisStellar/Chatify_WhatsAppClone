@@ -63,7 +63,7 @@
         clickable
         v-if="!(currentUserChat.idUser.idUser in contacts)"
         v-ripple
-        @click="addNewContact(currentUserChat.idUser.idUser)"
+        @click="differentWayToAddContact(currentUserChat)"
       >
         <q-item-section avatar top>
           <q-avatar>
@@ -104,7 +104,7 @@ export default {
     ...mapGetters("User", ["getContacts"]),
   },
   methods: {
-    ...mapActions("User", ["addNewContact", "eraseContact"]),
+    ...mapActions("User", ["eraseContact", "differentWayToAddContact"]),
   },
 };
 </script>
@@ -129,8 +129,44 @@ export default {
 }
 //Tablet
 @media (min-width: 480px) {
+  .headerBase {
+    height: 3rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    align-items: center;
+  }
+  .contentBase {
+    width: 20rem;
+    margin: auto;
+    border-radius: 100%;
+    height: 20rem;
+  }
+  .imgBaseUser {
+    width: 100%;
+    border-radius: 100%;
+    height: 100%;
+  }
 }
 //Desktop
 @media (min-width: 768px) {
+  .headerBase {
+    height: 3rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    align-items: center;
+  }
+  .contentBase {
+    width: 20rem;
+    margin: auto;
+    border-radius: 100%;
+    height: 20rem;
+  }
+  .imgBaseUser {
+    width: 100%;
+    border-radius: 100%;
+    height: 100%;
+  }
 }
 </style>

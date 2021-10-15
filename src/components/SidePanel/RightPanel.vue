@@ -84,7 +84,7 @@
               </q-item-section>
             </q-item>
             <!-- Add contacts -->
-            <q-item dark @click="addNewContact" clickable v-ripple>
+            <q-item dark clickable v-ripple>
               <q-item-section>Add Contact</q-item-section>
               <q-item-section avatar>
                 <!-- <q-icon name="groups" /> -->
@@ -171,7 +171,6 @@
     <!-- Modal -->
     <AddNewChannel v-model="showModalNewChannel" />
     <JoinChannel v-model="showModalJoinChannel" />
-    <AddNewContact v-model="showModalNewContact" />
   </div>
 </template>
 <script>
@@ -179,15 +178,12 @@ import { firebaseAuth } from "../../boot/firebase";
 import { mapActions, mapGetters, mapState } from "vuex";
 import AddNewChannel from "./../Modals/AddNewChannel.vue";
 import JoinChannel from "./../Modals/joinNewChannel.vue";
-import AddNewContact from "./../Modals/AddNewContact.vue";
+
 export default {
   methods: {
     ...mapActions("User", ["selectChanelVuex", "logOff", "selectUserChatVuex"]),
     addNewChannel() {
       this.showModalNewChannel = true;
-    },
-    addNewContact() {
-      this.showModalNewContact = true;
     },
     selectChanel(chanel) {
       this.selectChanelVuex(chanel);
@@ -214,13 +210,12 @@ export default {
   components: {
     AddNewChannel,
     JoinChannel,
-    AddNewContact,
   },
   data() {
     return {
       showModalNewChannel: false,
       showModalJoinChannel: false,
-      showModalNewContact: false,
+
       tab: "channels",
     };
   },
