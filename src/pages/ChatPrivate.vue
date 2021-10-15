@@ -46,19 +46,33 @@
     </div>
     <!-- Chat Box -->
     <div class="chatBoxBase" ref="checkMessagePrivate">
-      <q-chat-message
+      <div
+        class="messageBase"
         v-for="(messageSection, index) in getMessagesPrivateChat"
         :key="index"
-        :text="[messageSection.content]"
-        :stamp="messageSection.anotherTimeFormat"
-        text-color="black"
-        :bg-color="
-          messageSection.user.name === getCurrentUser.username.nameUser
-            ? 'cyan-4'
-            : 'cyan-1'
-        "
-        :sent="getCurrentUser.username.nameUser === messageSection.user.name"
-      />
+      >
+        <!-- Message Sent -->
+        <div
+          class="messageSent bg-cyan-2"
+          v-if="messageSection.user.id === getCurrentUser.userId.userId"
+        >
+          {{ messageSection.content }}
+          <div class="timeBase">
+            {{ messageSection.anotherTimeFormat }}
+          </div>
+        </div>
+
+        <!-- Message Received -->
+        <div
+          class="messageReceived bg-white"
+          v-if="messageSection.user.id === currentUserChat.idUser.idUser"
+        >
+          {{ messageSection.content }}
+          <div class="timeBase">
+            {{ messageSection.anotherTimeFormat }}
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Form -->
     <div class="formBase bg-white shadow-5 row">
@@ -144,9 +158,35 @@ export default {
 <style lang="scss">
 //iPhone
 @media (max-width: 480px) {
+  .timeBase {
+    font-size: 0.7rem;
+    color: grey;
+    text-align-last: right;
+  }
   .chatBase {
+    font-family: "Montserrat";
     position: relative;
     height: 100vh;
+  }
+  .messageSent {
+    width: max-content;
+    max-width: 12rem;
+    text-align: left;
+    margin: 0.2rem 0;
+    margin-left: auto;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    overflow-wrap: break-word;
+  }
+  .messageReceived {
+    width: max-content;
+    max-width: 12rem;
+    text-align: right;
+    margin: 0.2rem 0;
+    margin-right: auto;
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    overflow-wrap: break-word;
   }
   .headerChatBase {
     z-index: 2;
@@ -162,6 +202,9 @@ export default {
     height: 90%;
     padding: 1rem 1rem 3.8rem;
     overflow-y: auto;
+    display: flex;
+
+    flex-direction: column;
     background-color: silver;
     background-image: radial-gradient(
         circle at 100% 150%,
