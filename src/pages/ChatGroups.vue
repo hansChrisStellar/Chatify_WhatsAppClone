@@ -106,55 +106,53 @@ export default {
 };
 </script>
 <style lang="scss">
-.chatBase {
-  position: relative;
-  height: 100vh;
-}
-.headerChatBase {
-  z-index: 1;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 3rem;
-  background: red;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 1rem;
-}
-.chatBoxBase {
-  height: 100vh;
-  padding: 3.5rem 1rem;
-  overflow-y: auto;
-}
+// .chatBase {
+//   position: relative;
+//   height: 100vh;
+// }
+// .headerChatBase {
+//   z-index: 1;
+//   width: 100%;
+//   height: 3rem;
+//   background: red;
+//   display: flex;
+//   justify-content: space-between;
+//   padding: 0 1rem;
+// }
+// .chatBoxBase {
+//   height: 100vh;
+//   padding: 1rem 1rem 3.5rem;
+//   overflow-y: auto;
+// }
 
-.formBase {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: red;
-  display: flex;
-  padding: 0 1rem;
-  justify-content: space-between;
-  height: 3rem;
-  align-items: center;
-}
+// .formBase {
+//   position: fixed;
+//   bottom: 0;
+//   width: 100%;
+//   background: red;
+//   display: flex;
+//   padding: 0 1rem;
+//   justify-content: space-between;
+//   height: 3rem;
+//   align-items: center;
+// }
 
-::-webkit-scrollbar {
-  width: 5px;
-}
+// ::-webkit-scrollbar {
+//   width: 5px;
+// }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #020202;
-}
+// /* Track */
+// ::-webkit-scrollbar-track {
+//   background: #020202;
+// }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
+// /* Handle */
+// ::-webkit-scrollbar-thumb {
+//   background: #888;
+// }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
+// /* Handle on hover */
+// ::-webkit-scrollbar-thumb:hover {
+//   background: #555;
+// }
 </style>

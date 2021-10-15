@@ -1,5 +1,5 @@
 import { firebaseAuth, firebaseDb } from "src/boot/firebase"
-import { uid } from "quasar"
+import { uid, Notify } from "quasar"
 
 const state = {
     chanels: {},
@@ -53,6 +53,7 @@ const mutations = {
         state.chatList = {}
         state.currentUserChat = {}
         state.contacts = {}
+        state.tabFooter = 'chats'
     },
     //Change Tab Footer
     changeFooterTab(state, payload){
@@ -421,9 +422,11 @@ const actions = {
             
         })
     },
+    // Clear all the data
     clearData({commit}){
         commit('clearAllData', false)
     },
+    // Log out
     logOff(){
         firebaseAuth.signOut()
     },

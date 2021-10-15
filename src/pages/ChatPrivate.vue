@@ -1,9 +1,9 @@
 <template>
   <div class="chatBase">
     <!-- Header -->
-    <div class="headerChatBase bg-white shadow-5">
-      <!-- Title Channel -->
+    <div class="headerChatBase bg-white shadow-2">
       <div class="items-center row">
+        <!-- Button back -->
         <q-btn dense flat icon="arrow_back_ios" @click="this.$router.go(-1)" />
         <!-- Img -->
         <q-avatar size="28px">
@@ -109,9 +109,11 @@ export default {
       "addNewContact",
     ]),
     sendMessageForm() {
-      this.storageChatOnList();
-      this.sendMessageToUser(this.message);
-      this.message = "";
+      if (this.message.length >= 1) {
+        this.storageChatOnList();
+        this.sendMessageToUser(this.message);
+        this.message = "";
+      }
     },
     seeInfo() {
       this.$router.push("/contactInfo");
@@ -140,116 +142,343 @@ export default {
 };
 </script>
 <style lang="scss">
-.chatBase {
-  position: relative;
-  height: 100vh;
+//iPhone
+@media (max-width: 480px) {
+  .chatBase {
+    position: relative;
+    height: 100vh;
+  }
+  .headerChatBase {
+    z-index: 2;
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    border-bottom: lightgrey 1px solid;
+  }
+  .chatBoxBase {
+    z-index: 1;
+    height: 90%;
+    padding: 1rem 1rem 3.8rem;
+    overflow-y: auto;
+    background-color: silver;
+    background-image: radial-gradient(
+        circle at 100% 150%,
+        silver 24%,
+        white 24%,
+        white 28%,
+        silver 28%,
+        silver 36%,
+        white 36%,
+        white 40%,
+        transparent 40%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 0 150%,
+        silver 24%,
+        white 24%,
+        white 28%,
+        silver 28%,
+        silver 36%,
+        white 36%,
+        white 40%,
+        transparent 40%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 50% 100%,
+        white 10%,
+        silver 10%,
+        silver 23%,
+        white 23%,
+        white 30%,
+        silver 30%,
+        silver 43%,
+        white 43%,
+        white 50%,
+        silver 50%,
+        silver 63%,
+        white 63%,
+        white 71%,
+        transparent 71%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 100% 50%,
+        white 5%,
+        silver 5%,
+        silver 15%,
+        white 15%,
+        white 20%,
+        silver 20%,
+        silver 29%,
+        white 29%,
+        white 34%,
+        silver 34%,
+        silver 44%,
+        white 44%,
+        white 49%,
+        transparent 49%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 0 50%,
+        white 5%,
+        silver 5%,
+        silver 15%,
+        white 15%,
+        white 20%,
+        silver 20%,
+        silver 29%,
+        white 29%,
+        white 34%,
+        silver 34%,
+        silver 44%,
+        white 44%,
+        white 49%,
+        transparent 49%,
+        transparent
+      );
+    background-size: 100px 50px;
+  }
+  .formBase {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding: 0 1rem;
+    justify-content: space-between;
+    height: 10%;
+    align-items: center;
+    border-top: lightgrey 1px solid;
+  }
 }
-.headerChatBase {
-  z-index: 1;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 3rem;
+//Tablet
+@media (min-width: 480px) {
+  .chatBase {
+    position: relative;
+    height: 100vh;
+  }
+  .headerChatBase {
+    z-index: 1;
+    width: 100%;
+    height: 7%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    border-bottom: 1px solid lightgrey;
+  }
+  .chatBoxBase {
+    height: 86%;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: silver;
+    background-image: radial-gradient(
+        circle at 100% 150%,
+        silver 24%,
+        white 24%,
+        white 28%,
+        silver 28%,
+        silver 36%,
+        white 36%,
+        white 40%,
+        transparent 40%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 0 150%,
+        silver 24%,
+        white 24%,
+        white 28%,
+        silver 28%,
+        silver 36%,
+        white 36%,
+        white 40%,
+        transparent 40%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 50% 100%,
+        white 10%,
+        silver 10%,
+        silver 23%,
+        white 23%,
+        white 30%,
+        silver 30%,
+        silver 43%,
+        white 43%,
+        white 50%,
+        silver 50%,
+        silver 63%,
+        white 63%,
+        white 71%,
+        transparent 71%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 100% 50%,
+        white 5%,
+        silver 5%,
+        silver 15%,
+        white 15%,
+        white 20%,
+        silver 20%,
+        silver 29%,
+        white 29%,
+        white 34%,
+        silver 34%,
+        silver 44%,
+        white 44%,
+        white 49%,
+        transparent 49%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 0 50%,
+        white 5%,
+        silver 5%,
+        silver 15%,
+        white 15%,
+        white 20%,
+        silver 20%,
+        silver 29%,
+        white 29%,
+        white 34%,
+        silver 34%,
+        silver 44%,
+        white 44%,
+        white 49%,
+        transparent 49%,
+        transparent
+      );
+    background-size: 100px 50px;
+  }
+  .formBase {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding: 0 1rem;
+    justify-content: space-between;
+    height: 7%;
+    align-items: center;
+    border-top: 1px solid lightgrey;
+  }
+}
+//Desktop
+@media (min-width: 768px) {
+  .chatBase {
+    position: relative;
+    height: 100vh;
+  }
+  .headerChatBase {
+    z-index: 1;
+    width: 100%;
+    height: 7%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    border-bottom: 1px solid lightgrey;
+  }
 
-  display: flex;
-  justify-content: space-between;
-  padding: 0 1rem;
-}
-
-.chatBoxBase {
-  height: 100vh;
-  padding: 3.5rem 1rem;
-  overflow-y: auto;
-  background-color: silver;
-  background-image: radial-gradient(
-      circle at 100% 150%,
-      silver 24%,
-      white 24%,
-      white 28%,
-      silver 28%,
-      silver 36%,
-      white 36%,
-      white 40%,
-      transparent 40%,
-      transparent
-    ),
-    radial-gradient(
-      circle at 0 150%,
-      silver 24%,
-      white 24%,
-      white 28%,
-      silver 28%,
-      silver 36%,
-      white 36%,
-      white 40%,
-      transparent 40%,
-      transparent
-    ),
-    radial-gradient(
-      circle at 50% 100%,
-      white 10%,
-      silver 10%,
-      silver 23%,
-      white 23%,
-      white 30%,
-      silver 30%,
-      silver 43%,
-      white 43%,
-      white 50%,
-      silver 50%,
-      silver 63%,
-      white 63%,
-      white 71%,
-      transparent 71%,
-      transparent
-    ),
-    radial-gradient(
-      circle at 100% 50%,
-      white 5%,
-      silver 5%,
-      silver 15%,
-      white 15%,
-      white 20%,
-      silver 20%,
-      silver 29%,
-      white 29%,
-      white 34%,
-      silver 34%,
-      silver 44%,
-      white 44%,
-      white 49%,
-      transparent 49%,
-      transparent
-    ),
-    radial-gradient(
-      circle at 0 50%,
-      white 5%,
-      silver 5%,
-      silver 15%,
-      white 15%,
-      white 20%,
-      silver 20%,
-      silver 29%,
-      white 29%,
-      white 34%,
-      silver 34%,
-      silver 44%,
-      white 44%,
-      white 49%,
-      transparent 49%,
-      transparent
-    );
-  background-size: 100px 50px;
-}
-.formBase {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  padding: 0 1rem;
-  justify-content: space-between;
-  height: 3rem;
-  align-items: center;
+  .chatBoxBase {
+    height: 86%;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: silver;
+    background-image: radial-gradient(
+        circle at 100% 150%,
+        silver 24%,
+        white 24%,
+        white 28%,
+        silver 28%,
+        silver 36%,
+        white 36%,
+        white 40%,
+        transparent 40%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 0 150%,
+        silver 24%,
+        white 24%,
+        white 28%,
+        silver 28%,
+        silver 36%,
+        white 36%,
+        white 40%,
+        transparent 40%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 50% 100%,
+        white 10%,
+        silver 10%,
+        silver 23%,
+        white 23%,
+        white 30%,
+        silver 30%,
+        silver 43%,
+        white 43%,
+        white 50%,
+        silver 50%,
+        silver 63%,
+        white 63%,
+        white 71%,
+        transparent 71%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 100% 50%,
+        white 5%,
+        silver 5%,
+        silver 15%,
+        white 15%,
+        white 20%,
+        silver 20%,
+        silver 29%,
+        white 29%,
+        white 34%,
+        silver 34%,
+        silver 44%,
+        white 44%,
+        white 49%,
+        transparent 49%,
+        transparent
+      ),
+      radial-gradient(
+        circle at 0 50%,
+        white 5%,
+        silver 5%,
+        silver 15%,
+        white 15%,
+        white 20%,
+        silver 20%,
+        silver 29%,
+        white 29%,
+        white 34%,
+        silver 34%,
+        silver 44%,
+        white 44%,
+        white 49%,
+        transparent 49%,
+        transparent
+      );
+    background-size: 100px 50px;
+  }
+  .formBase {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding: 0 1rem;
+    justify-content: space-between;
+    height: 7%;
+    align-items: center;
+    border-top: 1px solid lightgrey;
+  }
 }
 
 ::-webkit-scrollbar {

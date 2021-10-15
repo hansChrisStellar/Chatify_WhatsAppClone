@@ -28,18 +28,20 @@ const actions = {
                 const userId = firebaseAuth.currentUser.uid
                 const refDb = firebaseDb.ref('users' + '/' + userId)
                 createdUser.user.updateProfile({
-
                     displayName: user.username,
                     photoURL: `http://gravatar.com/avatar/${uid(createdUser.user.email)}?d=identicon`
                 })
                 .then(() => {
                     refDb.set({
                         username: {
-                            userName: createdUser.user.displayName
+                            nameUser: createdUser.user.displayName
                         },
                         userImg: {
                             photoURL: `http://gravatar.com/avatar/${uid(createdUser.user.email)}?d=identicon`
-                        }
+                        },
+                        userId: {
+                            userId: createdUser.user.uid
+                        },
                     })
                 })
 
@@ -51,10 +53,10 @@ const actions = {
     logInUser({commit}, user){
         firebaseAuth.signInWithEmailAndPassword(user.email, user.password)
             .then((loggedInUser) => {
-                console.log(loggedInUser)
+                
             })
             .catch((err) => {
-                console.log(err)
+                
             })
     },
     handleAuthStateChange({commit, dispatch}){

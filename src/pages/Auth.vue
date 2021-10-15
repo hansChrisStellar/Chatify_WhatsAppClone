@@ -1,13 +1,17 @@
 <template>
-  <div class="relative-position window-height">
-    <div>Vue Slack Clone</div>
-    <div>Share, chat and enjoy with your friends!</div>
+  <div class="relative-position text-center q-pa-md">
+    <div class="col q-mb-sm">
+      <div class="text-h3">Chatify</div>
+      <div class="text-h6 text-weight-light">
+        Share, chat and enjoy with your friends!
+      </div>
+    </div>
     <q-card class="" style="min-width: 280px">
       <q-tabs
         v-model="tab"
         dense
         align="justify"
-        class="bg-primary text-white shadow-2"
+        class="bg-cyan-5 text-white shadow-2"
         :breakpoint="0"
       >
         <q-tab name="login" label="Log In" />
@@ -18,14 +22,14 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="login">
-          <div class="text-h6">Login</div>
+          <!-- Login -->
           <q-form @submit="logInAction">
             <q-input
               color="grey-3"
-              label-color="orange"
-              outlined
+              label-color="cyan-8"
               type="email"
               lazy-rules
+              dense
               :rules="[
                 (val) => validateEmail(val) || 'Please insert a valid email',
               ]"
@@ -33,14 +37,13 @@
               label="Email"
             >
               <template v-slot:append>
-                <q-icon name="event" color="orange" />
+                <q-icon name="person" color="cyan-8" />
               </template>
             </q-input>
             <q-input
-              color="grey-3"
-              label-color="orange"
+              label-color="cyan-8"
               lazy-rules
-              outlined
+              dense
               type="password"
               :rules="[
                 (val) =>
@@ -50,7 +53,7 @@
               label="Password"
             >
               <template v-slot:append>
-                <q-icon name="event" color="orange" />
+                <q-icon name="lock" color="cyan-8" />
               </template>
             </q-input>
             <q-btn label="Log In" type="submit" />
@@ -58,12 +61,11 @@
         </q-tab-panel>
 
         <q-tab-panel name="register">
-          <div class="text-h6">Register</div>
           <q-form @submit="registerAction">
+            <!-- username -->
             <q-input
-              color="grey-3"
-              label-color="orange"
-              outlined
+              label-color="cyan-8"
+              dense
               lazy-rules
               type="username"
               v-model="register.username"
@@ -75,14 +77,14 @@
               label="Username"
             >
               <template v-slot:append>
-                <q-icon name="event" color="orange" />
+                <q-icon name="person" color="cyan-8" />
               </template>
             </q-input>
+            <!-- email -->
             <q-input
-              color="grey-3"
-              label-color="orange"
-              outlined
+              label-color="cyan-8"
               lazy-rules
+              dense
               v-model="register.email"
               :rules="[
                 (val) => validateEmail(val) || 'Please insert a valid email',
@@ -90,14 +92,14 @@
               label="Email"
             >
               <template v-slot:append>
-                <q-icon name="event" color="orange" />
+                <q-icon name="email" color="cyan-8" />
               </template>
             </q-input>
+            <!-- password -->
             <q-input
-              color="grey-3"
-              label-color="orange"
-              outlined
+              label-color="cyan-8"
               lazy-rules
+              dense
               type="password"
               v-model="register.password"
               :rules="[
@@ -107,14 +109,14 @@
               label="Password"
             >
               <template v-slot:append>
-                <q-icon name="event" color="orange" />
+                <q-icon name="lock" color="cyan-8" />
               </template>
             </q-input>
+            <!-- confirm -->
             <q-input
-              color="grey-3"
-              label-color="orange"
-              outlined
+              label-color="cyan-8"
               lazy-rules
+              dense
               type="password"
               v-model="register.confirmPassword"
               :rules="[
@@ -124,7 +126,7 @@
               label="Confirm password"
             >
               <template v-slot:append>
-                <q-icon name="event" color="orange" />
+                <q-icon name="lock" color="cyan-8" />
               </template>
             </q-input>
             <q-btn label="Register" type="submit" />

@@ -40,6 +40,21 @@
         />
       </q-item-section>
     </q-item>
+    <!-- User Id -->
+    <q-item class="currentUserName text-black">
+      <q-item-section>
+        <q-item-label lines="1" ref="mylink">{{
+          getCurrentUser.userId.userId
+        }}</q-item-label>
+      </q-item-section>
+      <q-item-section side>
+        <q-icon
+          name="content_copy"
+          @click="copyIdUser(getCurrentUser.userId.userId)"
+          class="cursor-pointer"
+        />
+      </q-item-section>
+    </q-item>
     <!-- Log Off -->
     <q-item clickable v-ripple @click="signOff" class="logOff text-red">
       <q-item-section>
@@ -53,6 +68,7 @@
   </div>
 </template>
 <script>
+import { Notify } from "quasar";
 import { mapActions, mapGetters } from "vuex";
 export default {
   computed: {
@@ -62,6 +78,20 @@ export default {
     ...mapActions("User", ["logOff", "changeUsername"]),
     signOff() {
       this.logOff();
+    },
+    async copyIdUser(idUser) {
+      try {
+        await navigator.clipboard.writeText(idUser);
+        Notify.create({
+          message: "ID Copied",
+          color: "positive",
+        });
+      } catch ($e) {
+        Notify.create({
+          message: "Error",
+          color: "negative",
+        });
+      }
     },
   },
   components: {},

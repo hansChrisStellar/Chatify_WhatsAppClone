@@ -1,5 +1,4 @@
 import Auth from './../pages/Auth.vue'
-import Home from './../pages/Index.vue'
 import Chats from './../pages/Chats.vue'
 import ChatPrivate from './../pages/ChatPrivate.vue'
 import ChatGroups from './../pages/ChatGroups.vue'

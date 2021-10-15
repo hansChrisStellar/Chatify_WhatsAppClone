@@ -12,7 +12,7 @@
   </q-dialog>
 </template>
 <script>
-import { uid } from "quasar";
+import { uid, Notify } from "quasar";
 import { mapActions } from "vuex";
 export default {
   data() {
