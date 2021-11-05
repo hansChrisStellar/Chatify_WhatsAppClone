@@ -3,18 +3,23 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import { firebaseAuth, firebaseDb } from "src/boot/firebase";
 import { Loading } from "quasar";
 export default {
   name: "App",
-  beforeCreate() {
-    Loading.show();
-  },
   methods: {
-    ...mapActions("Auth", ["handleAuthStateChange"]),
+    ...mapActions("settingsUser", ["sendUserInformation"]),
   },
   mounted() {
-    this.handleAuthStateChange();
-    Loading.hide();
+    firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+        const userInformation = firebaseDb.ref("toneygram/users/" + user.uid);
+        userInformation.on("value", (allData) => {
+          let allInfoUser = allData.val();
+          this.sendUserInformation(allInfoUser);
+        });
+      }
+    });
   },
 };
 </script>

@@ -1,32 +1,33 @@
 <template>
-  <div class="relative-position text-center q-pa-md">
-    <div class="col q-mb-sm">
-      <div class="text-h3">Chatify</div>
-      <div class="text-h6 text-weight-light">
-        Share, chat and enjoy with your friends!
-      </div>
-    </div>
-    <q-card class="" style="min-width: 280px">
+  <div class="flex column authBase q-py-xl">
+    <div class="text-h3 text-center q-mb-md text-weight-light">toneygram</div>
+    <!-- Form Base -->
+    <div class="formBaseAuth q-mb-sm bg-grey-2">
+      <!-- Tabs -->
       <q-tabs
         v-model="tab"
-        dense
         align="justify"
-        class="bg-cyan-5 text-white shadow-2"
-        :breakpoint="0"
+        narrow-indicator
+        dense
+        class="q-mb-md"
       >
-        <q-tab name="login" label="Log In" />
-        <q-tab name="register" label="Register" />
+        <q-tab class="text-grey-5" name="login" label="Log in" />
+        <q-tab class="text-grey-5" name="register" label="Register" />
       </q-tabs>
-
-      <q-separator />
-
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="login">
-          <!-- Login -->
-          <q-form @submit="logInAction">
+      <!-- Tab -->
+      <q-tab-panels
+        v-model="tab"
+        animated
+        transition-prev="fade"
+        transition-next="fade"
+        class="text-white text-center bg-grey-2"
+      >
+        <!-- Login -->
+        <q-tab-panel name="login" class="q-py-none q-pb-md">
+          <q-form style="overflow: hidden">
             <q-input
               color="grey-3"
-              label-color="cyan-8"
+              label-color="grey-5"
               type="email"
               lazy-rules
               dense
@@ -36,12 +37,9 @@
               v-model="login.email"
               label="Email"
             >
-              <template v-slot:append>
-                <q-icon name="person" color="cyan-8" />
-              </template>
             </q-input>
             <q-input
-              label-color="cyan-8"
+              label-color="grey-5"
               lazy-rules
               dense
               type="password"
@@ -52,121 +50,176 @@
               v-model="login.password"
               label="Password"
             >
-              <template v-slot:append>
-                <q-icon name="lock" color="cyan-8" />
-              </template>
             </q-input>
-            <q-btn label="Log In" type="submit" />
+            <q-btn
+              label="Log In"
+              type="submit"
+              :color="
+                !validateEmail(login.email) || login.password.length <= 5
+                  ? 'light-blue-3'
+                  : 'light-blue-6'
+              "
+              class="full-width"
+              text-color="white"
+              @keyup.enter.prevent="logInUser"
+              @click="logInUser"
+              ref="logInButton"
+              :disable="
+                !validateEmail(login.email) || login.password.length <= 5
+              "
+            />
           </q-form>
         </q-tab-panel>
-
-        <q-tab-panel name="register">
-          <q-form @submit="registerAction">
-            <!-- username -->
-            <q-input
-              label-color="cyan-8"
-              dense
-              lazy-rules
-              type="username"
-              v-model="register.username"
-              :rules="[
-                (val) =>
-                  val.length >= 3 ||
-                  'Your username has to be longer than 3 characters',
-              ]"
-              label="Username"
-            >
-              <template v-slot:append>
-                <q-icon name="person" color="cyan-8" />
-              </template>
-            </q-input>
-            <!-- email -->
-            <q-input
-              label-color="cyan-8"
-              lazy-rules
-              dense
-              v-model="register.email"
-              :rules="[
-                (val) => validateEmail(val) || 'Please insert a valid email',
-              ]"
-              label="Email"
-            >
-              <template v-slot:append>
-                <q-icon name="email" color="cyan-8" />
-              </template>
-            </q-input>
-            <!-- password -->
-            <q-input
-              label-color="cyan-8"
-              lazy-rules
-              dense
-              type="password"
-              v-model="register.password"
-              :rules="[
-                (val) =>
-                  val.length >= 6 || 'Please enter more than 6 characters',
-              ]"
-              label="Password"
-            >
-              <template v-slot:append>
-                <q-icon name="lock" color="cyan-8" />
-              </template>
-            </q-input>
-            <!-- confirm -->
-            <q-input
-              label-color="cyan-8"
-              lazy-rules
-              dense
-              type="password"
-              v-model="register.confirmPassword"
-              :rules="[
-                (val) =>
-                  val.length >= 6 || 'Please enter more than 6 characters',
-              ]"
-              label="Confirm password"
-            >
-              <template v-slot:append>
-                <q-icon name="lock" color="cyan-8" />
-              </template>
-            </q-input>
-            <q-btn label="Register" type="submit" />
-          </q-form>
+        <!-- Register -->
+        <q-tab-panel name="register" class="q-py-none q-pb-md">
+          <RegisterSteps :showing="visible" />
         </q-tab-panel>
       </q-tab-panels>
-    </q-card>
+      <!-- OR -->
+      <div
+        class="row text-center items-center justify-between"
+        style="max-width: 240px; margin: auto"
+      >
+        <q-separator size="1px" style="width: 35%" color="grey-5" />
+        <div class="text-weight-regular text-grey-6" style="width: 10%">OR</div>
+        <q-separator size="1px" style="width: 35%" color="grey-5" />
+      </div>
+      <!-- Log in with Google -->
+      <div class="q-pa-md">
+        <q-btn
+          label="Use your Google Account"
+          color="light-blue-6"
+          type="submit"
+          class="col full-width"
+        />
+      </div>
+      <q-inner-loading :showing="visible">
+        <q-spinner-ios size="50px" color="grey-6" />
+      </q-inner-loading>
+    </div>
+    <!-- Footer -->
+    <q-separator
+      color="grey-5"
+      size="1px"
+      style="min-width: 245px"
+      class="q-mb-md"
+    ></q-separator>
+    <div class="text-body1 text-grey-5">© 2021 Toneygram</div>
   </div>
 </template>
+
 <script>
+import RegisterSteps from "./../components/Register.vue";
+import { Notify } from "quasar";
+import { firebaseAuth, firebaseDb } from "src/boot/firebase";
 import { mapActions } from "vuex";
 export default {
+  components: {
+    RegisterSteps,
+  },
   data() {
     return {
+      visible: false,
       tab: "login",
       login: {
         email: "",
         password: "",
       },
-      register: {
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      },
     };
   },
   methods: {
+    ...mapActions("settingsUser", ["sendUserInformation"]),
     validateEmail(email) {
       const re =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(String(email).toLowerCase());
     },
-    ...mapActions("Auth", ["registerUser", "logInUser"]),
-    registerAction() {
-      this.registerUser(this.register);
-    },
-    logInAction() {
-      this.logInUser(this.login);
+    logInUser() {
+      this.visible = true;
+      firebaseAuth
+        .signInWithEmailAndPassword(this.login.email, this.login.password)
+        .then((userCredentials) => {
+          const userInformation = firebaseDb.ref(
+            "toneygram/users/" + userCredentials.user.uid
+          );
+          userInformation.once("value", (allData) => {
+            this.$router
+              .push({ name: "Main" })
+              .then(() => {
+                Notify.create({
+                  avatar: userCredentials.user.photoURL,
+                  message: `Welcome, ${userCredentials.user.displayName}`,
+                  color: "positive",
+                });
+                this.visible = false;
+              })
+              .catch((error) => {
+                this.visible = false;
+                Notify.create({
+                  message: error.message,
+                  color: "Negative",
+                });
+              });
+          });
+        });
     },
   },
 };
 </script>
+<style lang="scss">
+//iPhone
+@media (max-width: 480px) {
+  .authBase {
+    align-items: center;
+  }
+  .imgLogoBase {
+    width: 10rem;
+    height: 10rem;
+  }
+  .imgLogoIcon {
+    width: 100%;
+    height: 100%;
+  }
+  .formBaseAuth {
+    min-width: 280px;
+  }
+}
+
+//Tablet
+@media (min-width: 480px) {
+  .authBase {
+    align-items: center;
+  }
+  .imgLogoBase {
+    width: 10rem;
+    height: 10rem;
+  }
+  .imgLogoIcon {
+    width: 100%;
+    height: 100%;
+  }
+  .formBaseAuth {
+    min-width: 280px;
+  }
+}
+
+//Desktop
+@media (min-width: 768px) {
+  .authBase {
+    align-items: center;
+    max-width: 480px;
+    margin: auto;
+  }
+  .imgLogoBase {
+    width: 10rem;
+    height: 10rem;
+  }
+  .imgLogoIcon {
+    width: 100%;
+    height: 100%;
+  }
+  .formBaseAuth {
+    width: 100%;
+  }
+}
+</style>

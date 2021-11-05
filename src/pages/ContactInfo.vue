@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="baseContactInfo">
     <!-- Header -->
     <div class="headerBase bg-white shadow-4 q-mb-md">
       <!-- left button -->
@@ -109,6 +109,9 @@ export default {
 };
 </script>
 <style lang="scss">
+.baseContactInfo {
+  font-family: "Montserrat";
+}
 //iPhone
 @media (max-width: 480px) {
   .headerBase {

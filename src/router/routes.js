@@ -1,19 +1,16 @@
 import Auth from './../pages/Auth.vue'
-import Chats from './../pages/Chats.vue'
+import Main from './../pages/Main.vue'
 import ChatPrivate from './../pages/ChatPrivate.vue'
 import ChatGroups from './../pages/ChatGroups.vue'
 import Groups from './../pages/Groups.vue'
 import ContactInfo from './../pages/ContactInfo.vue'
 import UserSettings from './../pages/UserSettings.vue'
+import Chats from './../pages/Chats.vue'
 const routes = [
   {
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {
-        path: '/chats',
-        component: Chats,
-        name: 'Chats'
-      },
+      
       {
         path: '/groups',
         component: Groups,
@@ -23,6 +20,21 @@ const routes = [
         path: '/settings',
         component: UserSettings,
         name: 'Settings',
+      },
+    ]
+  },
+  {
+    component: () => import('layouts/noLayout.vue'),
+    children: [
+      {
+        path: '/main',
+        component: Main,
+        name: 'Main'
+      },
+      {
+        path: '/main/:userId',
+        component: Chats,
+        name: 'Chat',
       },
     ]
   },

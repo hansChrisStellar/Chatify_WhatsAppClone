@@ -68,30 +68,6 @@
           </q-item-section>
         </q-item>
         <q-separator color="grey-3" size="1px" />
-        <!-- Create Group -->
-        <!-- <q-item clickable v-ripple @click="addNewChannel" class="">
-          <q-item-section avatar top>
-            <q-avatar>
-              <q-icon name="groups" color="cyan-3" />
-            </q-avatar>
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-section>Create a Group Chat</q-item-section>
-          </q-item-section>
-        </q-item> -->
-        <!-- Join Group Chat -->
-        <!-- <q-item clickable v-ripple @click="joinChannel" class="">
-          <q-item-section avatar top>
-            <q-avatar>
-              <q-icon name="reply_all" color="cyan-3" />
-            </q-avatar>
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-section>Join Group</q-item-section>
-          </q-item-section>
-        </q-item> -->
 
         <!-- Contacts -->
         <q-item v-for="(contact, key) in getContacts" :key="key">
@@ -161,29 +137,6 @@
         />
       </q-drawer>
     </div>
-
-    <!-- Footer -->
-    <q-footer reveal elevated>
-      <q-tabs
-        v-model="tabFooter"
-        dense
-        align="justify"
-        class="bg-white text-cyan-8 shadow-2"
-        :breakpoint="0"
-      >
-        <q-tab
-          name="chats"
-          icon="question_answer"
-          @click="changeTabFr('chats')"
-        />
-        <!-- <q-tab name="groups" icon="groups" @click="changeTabFr('groups')" /> -->
-        <q-tab
-          name="settings"
-          icon="settings"
-          @click="changeTabFr('settings')"
-        />
-      </q-tabs>
-    </q-footer>
 
     <q-page-container>
       <router-view />
